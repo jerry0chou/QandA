@@ -10,7 +10,6 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     mobile = models.CharField(max_length=11, blank=True, null=True, unique=True, verbose_name='手机号码')
     sex = models.BooleanField('性别', max_length=2, choices=((0, '男'), (1, '女'),), default=0)
-    #sex = models.CharField(max_length=2, default='男')
     self_description = models.CharField('描述',max_length=11, default='我什么都没写')
 
     class Meta:
@@ -41,20 +40,6 @@ class Tag(models.Model):
 
     def __unicode__(self):
         return self.name
-
-
-# # 分类
-# class Category(models.Model):
-#     name = models.CharField(max_length=30, verbose_name='分类名称')
-#     index = models.IntegerField(default=999, verbose_name='分类的排序')
-#
-#     class Meta:
-#         verbose_name = '分类'
-#         verbose_name_plural = verbose_name
-#         ordering = ['index', 'id']
-#
-#     def __unicode__(self):
-#         return self.name
 
 
 class Article(models.Model):
