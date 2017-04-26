@@ -41,10 +41,12 @@ class CommentAdmin(admin.ModelAdmin):
 class MessageAdmin(admin.ModelAdmin):
     list_display = ('id', 'content', 'date_publish',)
 
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
 
 admin.site.register(User, UserleAdmin)
 admin.site.register(Follow)
-admin.site.register(Tag)
+admin.site.register(Tag,TagAdmin)
 admin.site.register(Article, ArticleAdmin)
 admin.site.register(Comment,CommentAdmin)
 admin.site.register(Message,MessageAdmin)

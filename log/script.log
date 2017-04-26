@@ -9,3 +9,4 @@
 2017-04-26 11:54:45,318 [Thread-3:3800] [django.request:170] [base:get_response] [WARNING]- Not Found: /favicon.ico
 2017-04-26 11:54:45,318 [Thread-2:1568] [django.request:170] [base:get_response] [WARNING]- Not Found: /favicon.ico
 2017-04-26 11:54:51,700 [Thread-6:3956] [django.request:170] [base:get_response] [WARNING]- Not Found: /favicon.ico
+2017-04-26 13:03:56,776 [Thread-5:5956] [django.request:170] [base:get_response] [WARNING]- Not Found: /favicon.ico
