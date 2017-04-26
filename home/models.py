@@ -30,6 +30,9 @@ class Follow(models.Model):
         verbose_name_plural = verbose_name
         ordering = ['-id']
 
+    def __unicode__(self):
+        return str(self.id)
+
 
 # tag（标签）
 class Tag(models.Model):
@@ -44,13 +47,13 @@ class Tag(models.Model):
 
 
 class Article(models.Model):
-    title = models.CharField(max_length=256, verbose_name='文章标题')
-    desc = models.CharField(max_length=50, verbose_name='文章描述')
+    #title = models.CharField(max_length=256, verbose_name='文章标题')
+    #desc = models.CharField(max_length=50, verbose_name='文章描述')
     content = models.TextField(verbose_name='文章内容')
     thumbsup = models.IntegerField(default=0, verbose_name='点赞量')
     date_publish = models.DateTimeField(auto_now_add=False, verbose_name='发布时间')
     user = models.ForeignKey(User, verbose_name='用户')
-    tag = models.ManyToManyField(Tag, verbose_name='标签')
+    #tag = models.ManyToManyField(Tag, verbose_name='标签')
 
     class Meta:
         verbose_name = '文章'
@@ -58,7 +61,7 @@ class Article(models.Model):
         ordering = ['-date_publish']
 
     def __unicode__(self):
-        return self.title
+        return str(self.id)
 
 
 class Question(models.Model):

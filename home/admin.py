@@ -17,12 +17,12 @@ class UserleAdmin(admin.ModelAdmin):
 
 
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('user', 'title', 'desc', 'thumbsup',)
-    list_display_links = ('title',)
-    list_filter = ('date_publish', 'title')
+    list_display = ('user',  'thumbsup','date_publish',)
+    list_display_links = ('user',)
+    list_filter = ('date_publish', 'thumbsup')
     fieldsets = (
         (None, {
-            'fields': ('title', 'desc', 'thumbsup', 'content', 'tag', 'user', 'date_publish',)
+            'fields': ( 'thumbsup', 'content',  'user', 'date_publish',)
         }),
     )
 
