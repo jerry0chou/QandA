@@ -8,9 +8,10 @@ from django.contrib.auth.models import AbstractUser
 # 第一种：采用的继承方式扩展用户信息（本系统采用）
 # 扩展：关联的方式去扩展用户信息
 class User(AbstractUser):
+    nickname = models.CharField(max_length=50,default='', verbose_name='昵称')
     mobile = models.CharField(max_length=11, blank=True, null=True, unique=True, verbose_name='手机号码')
     sex = models.BooleanField('性别', max_length=2, choices=((0, '男'), (1, '女'),), default=0)
-    self_description = models.CharField('描述',max_length=11, default='我什么都没写')
+    self_description = models.CharField('描述',max_length=256, default='我什么都没写')
 
     class Meta:
         verbose_name = '用户'

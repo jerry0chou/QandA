@@ -57,7 +57,11 @@
                     <li>
                         {% if client.username %}
                             <a href="" class="dropdown-toggle " data-toggle="dropdown">
-                                <b>{{ client.username }}</b>
+                                {% if client.nickname %}
+                                    <b>{{ client.nickname }}</b>
+                                {% else %}
+                                    <b>{{ client.username }}</b>
+                                {% endif %}
                                 <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">

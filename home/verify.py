@@ -7,8 +7,8 @@ def verify_username(name):
     name_dic = {}
     string = ''
     query = User.objects.filter(username=name).values('username')
-    if len(name) < 5:
-        string = string + '密码长度不能低于5位'
+    if len(name) < 3:
+        string = string + '用户名长度不能低于3位'
     elif query:
         string = string + '用户名已存在'
     name_dic['name'] = string

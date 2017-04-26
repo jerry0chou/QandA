@@ -5,12 +5,12 @@ from django.contrib import admin
 
 # Register your models here.
 class UserleAdmin(admin.ModelAdmin):
-    list_display = ('username', 'sex', 'self_description', 'email', 'mobile')
+    list_display = ('username','nickname', 'sex', 'self_description', 'email', 'mobile')
     list_display_links = ('username',)
     list_filter = ('username', 'email',)
     fieldsets = (
         (None, {
-            'fields': ('username', 'sex', 'self_description', 'email', 'mobile', 'password',)
+            'fields': ('username','nickname', 'sex', 'self_description', 'email', 'mobile', 'password',)
         }),
 
     )
@@ -40,9 +40,11 @@ class CommentAdmin(admin.ModelAdmin):
 
 class MessageAdmin(admin.ModelAdmin):
     list_display = ('id', 'content', 'date_publish',)
+    list_display_links = ('content',)
 
 class TagAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')
+    list_display_links = ('name',)
 
 admin.site.register(User, UserleAdmin)
 admin.site.register(Follow)

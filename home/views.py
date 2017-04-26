@@ -35,13 +35,14 @@ def login_reg(request):
             else:
                 return HttpResponse('用户名或密码输入错误')
 
-        elif len(request.POST) == 5:
+        elif len(request.POST) == 6:
             name = request.POST['username']
+            nickname = request.POST['nickname']
             phone = request.POST['mobile']
             pwd = request.POST['password']
             pwd2 = request.POST['password2']
             sex = request.POST['sex']
-            print name, phone, pwd, pwd2, sex
+            print name,nickname, phone, pwd, pwd2, sex
             name_dic = verify_username(name)
             phone_dic = verify_phone(phone)
             pwd_dic = verify_pwd(pwd, pwd2)
@@ -49,6 +50,7 @@ def login_reg(request):
             if dictMerged['phone'] == '' and dictMerged['name'] == '' and dictMerged['pwd'] == '':
                 user = User()
                 user.username = name
+                user.nickname=nickname
                 user.mobile = phone
                 user.password = pwd
                 user.sex = sex

@@ -12,6 +12,13 @@
     <div class="col-md-12">
         <div class="form-group">
             <div>
+                <input type="text" class="form-control" placeholder="昵称 *可以不写" name="nickname" id="nickname_reg" required/>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+            <div>
                 <input type="text" class="form-control" placeholder="输入手机号" name="mobile" id="mobile_reg" required/>
                 <small id="tipsforphone" class="text-danger"></small>
             </div>
@@ -63,6 +70,7 @@
                 dataType: 'text',
                 data: {
                     'username': $('#username_reg').val(),
+                    'nickname': $('#nickname_reg').val(),
                     'mobile': $('#mobile_reg').val(),
                     'password': $('#password_reg').val(),
                     'password2': $('#password2_reg').val(),
