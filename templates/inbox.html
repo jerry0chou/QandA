@@ -1,0 +1,51 @@
+{% extends 'headbar.html' %}
+{% load staticfiles %}
+{% block main_content %}
+    {% for i in test %}
+    <div class="col-md-8 col-md-offset-2 well">
+        <div class="row">
+            <div class="col-md-2">
+                <p><b>最近联系</b></p>
+            </div>
+            <div class="col-md-2 col-md-offset-8">
+                <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-envelope">&nbsp;写私信</span></button>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-md-1">
+                <img src="{% static "img/zhi.jpg" %}" width="100" class="img-responsive img-thumbnail"/>
+            </div>
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-3">
+                        <a class="text-primary">知乎书店团队:<span class="glyphicon glyphicon-certificate"></span></a>
+                    </div>
+                    <div class="col-md-5">
+                        <p>亲爱的 Jerry Chu，你好，</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <h4>
+                        欢迎来到知乎书店。《日本有意思》已经放入你的书架，你可以在最新版客户「更多」栏目 「我的书架」中阅读。
+                        你购买或下载的电子书都会放在书架中。
+                        如果你在使用过程中遇到了疑问，可以查看常见问题解答，也可以通过客户端
+                        「摇一摇」或者回复此私信反馈给我们。
+                        谢谢你的支持！
+                        爱你的知乎书店团队
+                    </h4>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <p style="color: gray">2月20日 12:26</p>
+                    </div>
+                    <div class="col-md-3 col-md-offset-6">
+                        <button type="button" class="btn btn-primary">回复</button>
+                        <button type="button" class="btn btn-danger">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,46 @@
+{% load staticfiles %}
+<form class="form-horizontal" role="form">
+    <div class="col-md-12">
+        <div class="form-group">
+            <div>
+                <input id="username_login" type="text" class="form-control" placeholder="输入用户名"/>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+            <div>
+                <input id="password_login" type="password" class="form-control" placeholder="输入密码"/>
+                <small id="tipsforlogin" class="text-danger"></small>
+            </div>
+
+        </div>
+    </div>
+    <button id="loginButton" type="button" class="btn btn-primary btn-lg btn-block">登录</button>
+</form>
+<script>
+    $(document).ready(function () {
+        $('#loginButton').click(function () {
+            $.ajax({
+                url: '{% url 'login_reg' %}',
+                type: 'POST',
+                dataType: 'text',
+                data: {
+                    'username': $('#username_login').val(),
+                    'password': $('#password_login').val()
+                },
+                success: function (data) {
+                    if (data == 'ok') {
+                        $(window).attr('location','{% url 'index' %}');
+                    }
+                    else {
+                        $('#tipsforlogin').html(data);
+                    }
+                },
+                error: function () {
+                    alert('出现错误!')
+                }
+            });
+        });
+    });
+</script>

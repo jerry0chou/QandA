@@ -1,0 +1,11 @@
+2017-04-17 15:06:28,502 [Thread-2:8272] [django.request:170] [base:get_response] [WARNING]- Not Found: /favicon.ico
+2017-04-18 13:10:58,964 [Thread-2:9544] [django.request:170] [base:get_response] [WARNING]- Not Found: /favicon.ico
+2017-04-18 13:10:58,964 [Thread-3:404] [django.request:170] [base:get_response] [WARNING]- Not Found: /favicon.ico
+2017-04-18 15:48:57,572 [Thread-8:9336] [django.request:170] [base:get_response] [WARNING]- Not Found: /favicon.ico
+2017-04-18 15:57:26,684 [Thread-32:10136] [django.request:170] [base:get_response] [WARNING]- Not Found: /admin/upload/kindeditor
+2017-04-18 16:10:46,190 [Thread-50:4840] [django.request:170] [base:get_response] [WARNING]- Not Found: /admin/upload/kindeditor
+2017-04-18 16:12:52,842 [Thread-5:3456] [django.request:170] [base:get_response] [WARNING]- Not Found: /admin/upload/kindeditor
+2017-04-18 17:36:16,703 [Thread-8:7664] [django.request:170] [base:get_response] [WARNING]- Not Found: /favicon.ico
+2017-04-26 11:54:45,318 [Thread-3:3800] [django.request:170] [base:get_response] [WARNING]- Not Found: /favicon.ico
+2017-04-26 11:54:45,318 [Thread-2:1568] [django.request:170] [base:get_response] [WARNING]- Not Found: /favicon.ico
+2017-04-26 11:54:51,700 [Thread-6:3956] [django.request:170] [base:get_response] [WARNING]- Not Found: /favicon.ico

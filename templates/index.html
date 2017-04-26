@@ -1,0 +1,70 @@
+{% extends 'headbar.html' %}
+{% load staticfiles %}
+{% block main_content %}
+		<div class="container">
+			<div class="row ">
+				<div class="col-md-6 col-md-push-1 well">
+					<span class="glyphicon glyphicon-list-alt">&nbsp;<strong>最新动态</strong></span>
+					{% include 'article_simplified.html' %}
+					<div class="col-md-offset-2">
+                        {% include 'pagination.html' %}
+					</div>
+				</div>
+				<div class="col-md-4 col-md-push-1 ">
+					<div class="row well">
+						<div class="col-md-10">
+							<span class="glyphicon glyphicon-list-alt">&nbsp;<strong>关于我</strong></span>
+							<div class="list-group">
+								<a href="#" class="list-group-item active">我的评论<span class="badge">14</span></a>
+								<a href="#" class="list-group-item">我的文章<span class="badge">8</span></a>
+								<a href="#" class="list-group-item">我的收藏<span class="badge">5</span></a>
+							</div>
+						</div>
+					</div>
+					<div class="row well">
+						<div class="col-md-10 ">
+							<div class="row">
+								<div class=" col-md-offset-1">
+									<ul class="nav nav-pills">
+										<li class="active">
+											<a href="#NewQues" id="NewQues-tab" data-toggle="tab">最新提问</a>
+										</li>
+										<li>
+											<a href="#MostPraise" id="MostPraise-tab" data-toggle="tab">最多点赞</a>
+										</li>
+										<li>
+											<a href="#MostComment" id="MostComment-tab" data-toggle="tab">最多评论</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<br />
+							<div class="tab-content">
+								<div class="tab-pane fade active in" id="NewQues">
+									<div class="list-group">
+										<a href="#" class="list-group-item " style="background-color: #f2dede;">最新提问1<span class="badge">14</span></a>
+										<a href="#" class="list-group-item" style="background-color: #fcf8e3;">最新提问2<span class="badge">8</span></a>
+										<a href="#" class="list-group-item" style="background-color: #d9edf7;">最新提问3<span class="badge">5</span></a>
+									</div>
+								</div>
+								<div class="tab-pane fade " id="MostPraise">
+									<div class="list-group">
+										<a href="#" class="list-group-item " style="background-color: #f2dede;">最多点赞1<span class="badge">14</span></a>
+										<a href="#" class="list-group-item" style="background-color: #fcf8e3;">最多点赞2<span class="badge">8</span></a>
+										<a href="#" class="list-group-item" style="background-color: #d9edf7;">最多点赞3<span class="badge">5</span></a>
+									</div>
+								</div>
+								<div class="tab-pane fade " id="MostComment">
+									<div class="list-group">
+										<a href="#" class="list-group-item " style="background-color: #f2dede;">最多评论1<span class="badge">14</span></a>
+										<a href="#" class="list-group-item" style="background-color: #fcf8e3;">最多评论2<span class="badge">8</span></a>
+										<a href="#" class="list-group-item" style="background-color: #d9edf7;">最多评论3<span class="badge">5</span></a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+{% endblock %}

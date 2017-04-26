@@ -1,0 +1,149 @@
+{% extends 'headbar.html' %}
+{% load staticfiles %}
+{% block main_content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 well">
+                <div class="col-md-6 col-md-offset-1">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table-condensed">
+                                <tr>
+                                    <td>
+                                        <h4><span class="label label-danger">调查类问题</span></h4></td>
+                                    <td>
+                                        <h4><span class="label label-info">帅醒</span></h4></td>
+                                    <td>
+                                        <h4><span class="label label-warning">什么体验</span></h4></td>
+                                    <td>
+                                        <h4><span class="label label-primary">健身</span></h4></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <h3>男生由丑变帅后是什么样的感觉？</h3>
+                    </div>
+                    <div class="row">
+                        <p style="color: gray;">
+                            看到热门上有一个变美之后的明显差距，我也来问一个男生们由丑变帅后的体验和感觉？过程是怎么样的？是否艰辛？变帅后是什么样的感觉？有没有开外挂的感觉？</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-md-offset-1">
+                    <div class="table-responsive">
+                        <table class="table-condensed">
+                            <tr>
+                                <td><img src="{% static "img/pic02.jpg" %}" width="100"
+                                         class="img-responsive img-thumbnail"/></td>
+                                <td><h4>JerryChu</h4></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <hr/>
+                    <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus">关注</span>
+                    </button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#WriteAnswer"><span
+                            class="glyphicon glyphicon-pencil">写回答</span></button>
+
+                </div>
+                <div class="modal fade" id="WriteAnswer" tabindex="-1">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="{% static "img/pic02.jpg" %}" width="300"
+                                             class="img-responsive img-thumbnail"/>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <h4 class="modal-title" id="Username">JerrryChu</h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-body">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-md-8  well">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item ">
+                                <h4 class="text-center"><span class="glyphicon glyphicon-pencil">1672个回答</span></h4>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <img src="{% static "img/pic02.jpg" %}" width="300" class="img-responsive img-thumbnail"/>
+                        </div>
+                        <div class="col-md-7">
+                            <h4>鹿小天使</h4>
+                            <p style="color: gray">插画/大学狗/留学狗/不是单身狗</p>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-primary"><span
+                                    class="glyphicon glyphicon-plus">关注</span></button>
+                            <button type="button" class="btn btn-primary"><span
+                                    class="glyphicon glyphicon-envelope">私信</span></button>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <h4>
+                            有人问到我的Instagram，是nan_qny。慕名来看狗血爱情故事的，抱歉已分手。生大病以后才看出一个人珍不珍惜你。在美国被前任送进精神科关了三天不能出来和一群疯子在一起，不能用手机不能穿自己的衣服不能打电话，出院后在墨西哥前任大半夜不顾我病情发作跑出去耍把我锁在房间里，自己体验了一个人呼吸不了没有食物没有水手机没电叫屋外的人报警打碎房门才出来买充电器，总之生生死死都经历过来了，什么都不怕了</h4>
+                        <img src="{% static "img/f2.jpg" %}" width="600" class="img-responsive"/>
+                        <p>下面变身【也没有多好看...</p>
+                        <img src="{% static "img/f1.jpg" %}" width="600" class="img-responsive"/>
+                    </div>
+                    <hr/>
+                    <h3><a data-toggle="collapse" href="#collapseComment"><span
+                            class="glyphicon glyphicon-comment"><code>45</code>&nbsp;</span></a>
+                        <span class="glyphicon glyphicon-thumbs-up"><code>100</code>&nbsp;</span>
+                        <span class="glyphicon glyphicon-calendar"><code>2017-3-24</code>&nbsp;</span>
+                    </h3>
+                    {% include 'comment.html' %}
+                    <hr/>
+                    <div class="col-md-offset-3">
+                        {% include 'pagination.html' %}
+                    </div>
+                </div>
+                <div class="col-md-4  ">
+                    <div class="row well">
+                        <div class=" col-md-offset-1">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="list-group">
+                                        <a class="list-group-item ">
+                                            <h4 class="text-center"><span
+                                                    class="glyphicon glyphicon-list-alt">相关问题</span>
+                                            </h4>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                <a href="#" class="list-group-item ">你见过最美好的男生是什么样的?<span class="badge">1565</span></a>
+                                <a href="#" class="list-group-item">女生是怎么看待腹肌男的？<span class="badge">1187</span></a>
+                                <a href="#" class="list-group-item">女生由丑变美后是什么样的感觉？<span class="badge">1235</span></a>
+                                <a href="#" class="list-group-item">什么是爱？爱一个人是什么感觉？<span class="badge">10290</span></a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

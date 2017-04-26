@@ -1,0 +1,53 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    {% include 'static_lib.html' %}
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-md-push-4 ">
+            <div class="row">
+                <div class="col-md-9 col-md-push-3">
+                    <h1><strong>知乎</strong></h1>
+                </div>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col-md-11 col-md-push-1 ">
+                    <strong>与世界分享你的知识、经验和见解</strong>
+                </div>
+            </div>
+            <br/>
+            <div class="row">
+                <div class="col-md-10 well">
+                    <div class="row">
+                        <div class="col-md-9 col-md-push-3">
+                            <ul class="nav nav-pills">
+                                <li class="active">
+                                    <a href="#login" id="login-tab" data-toggle="tab">登陆</a>
+                                </li>
+                                <li>
+                                    <a href="#reg" id="reg-tab" data-toggle="tab">注册</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="tab-content">
+                        <div class="tab-pane fade active in" id="login">
+                            {% include 'login_form.html' %}
+                        </div>
+                        <div class="tab-pane fade " id="reg">
+                            {% include 'reg_form.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,91 @@
+{% load staticfiles %}
+<form class="form-horizontal" role="form">
+
+    <div class="col-md-12">
+        <div class="form-group">
+            <div>
+                <input type="text" class="form-control" placeholder="用户名" name="username" id="username_reg" required/>
+                <small id="tipsforname" class="text-danger"></small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+            <div>
+                <input type="text" class="form-control" placeholder="输入手机号" name="mobile" id="mobile_reg" required/>
+                <small id="tipsforphone" class="text-danger"></small>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+            <div>
+                <input type="password" class="form-control" placeholder="输入密码" name="password" id="password_reg"
+                       required/>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+            <div>
+                <input type="password" class="form-control" placeholder="确认密码" name="password2" id="password2_reg"
+                       required/>
+                <small id="tipsforpwd" class="text-danger"></small>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-xs-2 col-xs-offset-4">
+        <div class="form-group ">
+            <div class="radio">
+                <label><input checked type="radio" name="sex" name="sex" value="男" id="sex"/>男</label>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-2 col-xs-offset-1">
+        <div class="form-group ">
+            <div class="radio">
+                <label><input type="radio" name="sex" value="女"/>女</label>
+            </div>
+        </div>
+    </div>
+    <button id="regButton" type="button" class="btn btn-primary btn-lg btn-block">注册</button>
+</form>
+<script>
+    $(document).ready(function () {
+        $('#regButton').click(function () {
+            var msg = null
+            $.ajax({
+                url: '{% url 'login_reg' %}',
+                type: 'POST',
+                dataType: 'text',
+                data: {
+                    'username': $('#username_reg').val(),
+                    'mobile': $('#mobile_reg').val(),
+                    'password': $('#password_reg').val(),
+                    'password2': $('#password2_reg').val(),
+                    'sex': $('input[type="radio"]:checked').val()
+                },
+                success: function (data) {
+                    msg = JSON.parse(data);
+                    if (msg.name == '' && msg.phone == '' && msg.pwd=='') {
+                        alert('注册成功！')
+                    }
+                    else {
+                        $('#tipsforname').html();
+                        $('#tipsforname').html(msg.name);
+                         $('#tipsforphone').html();
+                        $('#tipsforphone').html(msg.phone);
+                        $('#tipsforpwd').html();
+                        $('#tipsforpwd').html(msg.pwd);
+                    }
+                },
+                error: function () {
+                    alert('出现错误!')
+                }
+            });
+        });
+    });
+</script>
