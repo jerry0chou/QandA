@@ -1,5 +1,5 @@
 {% load staticfiles %}
-{% for t in test %}
+{% for article in article_list %}
 <div class="alert alert-info ">
     <div class="row">
         <div class="col-md-2">
@@ -14,18 +14,20 @@
     </div>
     <div class="row">
         <div class="col-md-2">
-            <span class="label label-info">分类名</span>
+            <span class="label label-info">{{ article.tag }}</span>
         </div>
         <div class="col-md-10">
-            <p>问题名</p>
+            <p>问题名{{ article.title }}</p>
         </div>
     </div>
-    <p>说起出国旅游，难免就要联想到“买买买”。购物是人的天性，在我们去日本背电饭锅马桶盖的时候，日本人到中国也是一番扫货。中国地大物博，日本人扫的货也是品类繁多花样百出，那么他们到底最喜欢买些啥？....</p>
+    <div>
+        {{ article.content }}
+    </div>
     <hr/>
     <h4>
         <span class="glyphicon glyphicon-comment"><code>45</code>&nbsp;</span>
-        <span class="glyphicon glyphicon-thumbs-up"><code>100</code>&nbsp;</span>
-        <span class="glyphicon glyphicon-calendar"><code>2017-3-24</code>&nbsp;</span>
+        <span class="glyphicon glyphicon-thumbs-up"><code>{{ article.thumbsup }}</code>&nbsp;</span>
+        <span class="glyphicon glyphicon-calendar"><code>{{ article.date_publish }}</code>&nbsp;</span>
     </h4>
 </div>
 {% endfor %}

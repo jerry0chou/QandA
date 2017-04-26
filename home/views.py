@@ -2,13 +2,14 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
-from home.models import User
+from home.models import User,Article,Message
 from home.verify import verify_username, verify_phone, verify_pwd
 import json
 
 
 def global_setting(request):
     client = request.session.get('client', default=None)
+    article_list=Article.objects.all()
     test = range(3)
     return locals()
 
@@ -82,4 +83,6 @@ def profile(request):
 
 
 def inbox(request):
+    client = request.session.get('client', default=None)
+    message_list=Message.objects.filter(user_id=client.id)
     return render(request, 'inbox.html', locals())
