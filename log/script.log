@@ -32,3 +32,12 @@ Traceback (most recent call last):
   File "F:\DjangoSpace\Graduate\QandA\home\views.py", line 68, in logout
     print client.mobile, 'logout'
 AttributeError: 'NoneType' object has no attribute 'mobile'
+2017-04-26 16:43:07,243 [Thread-72:1368] [django.request:256] [base:handle_uncaught_exception] [ERROR]- Internal Server Error: /logout
+Traceback (most recent call last):
+  File "F:\DjangoSpace\Graduate\QandA-env\lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "F:\DjangoSpace\Graduate\QandA-env\lib\site-packages\django\views\decorators\csrf.py", line 58, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "F:\DjangoSpace\Graduate\QandA\home\views.py", line 68, in logout
+    print client.mobile, 'logout'
+AttributeError: 'NoneType' object has no attribute 'mobile'
