@@ -7,13 +7,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('home', '0004_auto_20170426_1806'),
+        ('home', '0002_auto_20170426_2134'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='question',
-            name='desc',
-            field=models.TextField(max_length=256, verbose_name=b'\xe6\x96\x87\xe7\xab\xa0\xe6\x8f\x8f\xe8\xbf\xb0'),
+            model_name='tag',
+            name='name',
+            field=models.CharField(unique=True, max_length=30, verbose_name=b'\xe6\xa0\x87\xe7\xad\xbe\xe5\x90\x8d\xe7\xa7\xb0'),
         ),
     ]

@@ -36,7 +36,7 @@ class Follow(models.Model):
 
 # tag（标签）
 class Tag(models.Model):
-    name = models.CharField(max_length=30, verbose_name='标签名称')
+    name = models.CharField(max_length=30,unique=True, verbose_name='标签名称')
 
     class Meta:
         verbose_name = '标签'
@@ -47,13 +47,10 @@ class Tag(models.Model):
 
 
 class Article(models.Model):
-    #title = models.CharField(max_length=256, verbose_name='文章标题')
-    #desc = models.CharField(max_length=50, verbose_name='文章描述')
     content = models.TextField(verbose_name='文章内容')
     thumbsup = models.IntegerField(default=0, verbose_name='点赞量')
     date_publish = models.DateTimeField(auto_now_add=False, verbose_name='发布时间')
     user = models.ForeignKey(User, verbose_name='用户')
-    #tag = models.ManyToManyField(Tag, verbose_name='标签')
 
     class Meta:
         verbose_name = '文章'
@@ -65,11 +62,12 @@ class Article(models.Model):
 
 
 class Question(models.Model):
-    title = models.CharField(max_length=256, verbose_name='问题名')
+    title = models.CharField(max_length=128, verbose_name='问题名')
     desc = models.TextField(max_length=256, verbose_name='文章描述')
     date_publish = models.DateTimeField(auto_now_add=False, verbose_name='发布时间')
     focus_num = models.IntegerField(default=0, verbose_name='关注量')
-    article = models.ForeignKey(Article, verbose_name='文章')
+    article = models.ForeignKey(Article,blank=True, null=True, verbose_name='文章')
+    tag = models.ManyToManyField(Tag, verbose_name='标签')
 
     class Meta:
         verbose_name = '问题'
@@ -97,7 +95,7 @@ class Comment(models.Model):
 
 
 class Message(models.Model):
-    user = models.ForeignKey(User, blank=True, null=True, verbose_name='信息用户')
+    user = models.ForeignKey(User, blank=True, null=True, verbose_name='消息用户')
     content = models.TextField(verbose_name='信息内容', blank=True, null=True)
     date_publish = models.DateTimeField(auto_now_add=False, verbose_name='发布时间', blank=True, null=True)
 

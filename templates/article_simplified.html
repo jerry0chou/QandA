@@ -1,5 +1,5 @@
 {% load staticfiles %}
-{% for article in article_list %}
+{% for question in question_list %}
 <div class="alert alert-info ">
     <div class="row">
         <div class="col-md-2">
@@ -14,20 +14,23 @@
     </div>
     <div class="row">
         <div class="col-md-2">
-            <span class="label label-info">{{ article.tag }}</span>
+            <span class="label label-info">{{ question.tag }}</span>
         </div>
-        <div class="col-md-10">
-            <p>问题名{{ article.title }}</p>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>{{ question.title }}</h3>
         </div>
     </div>
     <div>
-        {{ article.content }}
+       内容
     </div>
     <hr/>
     <h4>
         <span class="glyphicon glyphicon-comment"><code>45</code>&nbsp;</span>
-        <span class="glyphicon glyphicon-thumbs-up"><code>{{ article.thumbsup }}</code>&nbsp;</span>
-        <span class="glyphicon glyphicon-calendar"><code>{{ article.date_publish }}</code>&nbsp;</span>
+        <span class="glyphicon glyphicon-heart"><code>{{ question.focus_num }}</code>&nbsp;</span>
+        <span class="glyphicon glyphicon-calendar"><code>{{ question.date_publish }}</code>&nbsp;</span>
     </h4>
 </div>
 {% endfor %}

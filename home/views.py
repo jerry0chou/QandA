@@ -2,7 +2,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
-from home.models import User,Article,Message
+from home.models import User,Article,Message,Question
 from home.verify import verify_username, verify_phone, verify_pwd
 import json
 
@@ -10,6 +10,7 @@ import json
 def global_setting(request):
     client = request.session.get('client', default=None)
     article_list=Article.objects.all()
+    question_list = Question.objects.all()
     test = range(3)
     return locals()
 
