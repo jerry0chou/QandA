@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-from django.conf import settings
 
 
 class Migration(migrations.Migration):
@@ -13,8 +12,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='message',
-            name='user',
-            field=models.ForeignKey(verbose_name=b'\xe6\xb6\x88\xe6\x81\xaf\xe7\x94\xa8\xe6\x88\xb7', blank=True, to=settings.AUTH_USER_MODEL, null=True),
+            model_name='article',
+            name='comment',
+            field=models.ForeignKey(default=b'', blank=True, to='home.Comment', null=True, verbose_name=b'\xe8\xaf\x84\xe8\xae\xba'),
         ),
     ]

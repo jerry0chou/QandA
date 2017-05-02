@@ -17,14 +17,10 @@ class UserleAdmin(admin.ModelAdmin):
 
 
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('user',  'thumbsup','date_publish',)
+    list_display = ('id','user', 'thumbsup', 'date_publish',)
     list_display_links = ('user',)
     list_filter = ('date_publish', 'thumbsup')
-    fieldsets = (
-        (None, {
-            'fields': ( 'thumbsup', 'content',  'user', 'date_publish',)
-        }),
-    )
+
 
     class Media:
         js = (
@@ -35,27 +31,13 @@ class ArticleAdmin(admin.ModelAdmin):
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'content', 'date_publish', 'thumbsup',)
+    list_display = ('id', 'user', 'content', 'date_publish', 'thumbsup',)
     list_display_links = ('content',)
-
-    class Media:
-        js = (
-            '/static/js/kindeditor-4.1.10/kindeditor-min.js',
-            '/static/js/kindeditor-4.1.10/lang/zh_CN.js',
-            '/static/js/kindeditor-4.1.10/config.js',
-        )
 
 
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ('id', 'content', 'date_publish',)
+    list_display = ('id', 'from_user', 'to_user', 'content', 'date_publish',)
     list_display_links = ('content',)
-
-    class Media:
-        js = (
-            '/static/js/kindeditor-4.1.10/kindeditor-min.js',
-            '/static/js/kindeditor-4.1.10/lang/zh_CN.js',
-            '/static/js/kindeditor-4.1.10/config.js',
-        )
 
 
 class TagAdmin(admin.ModelAdmin):
@@ -64,14 +46,15 @@ class TagAdmin(admin.ModelAdmin):
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title','desc','date_publish','focus_num',)
+    list_display = ('id', 'title', 'desc', 'date_publish', 'focus_num',)
     list_display_links = ('title',)
     list_filter = ('date_publish', 'focus_num')
+
 
 admin.site.register(User, UserleAdmin)
 admin.site.register(Follow)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Article, ArticleAdmin)
-admin.site.register(Question,QuestionAdmin)
+admin.site.register(Question, QuestionAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Message, MessageAdmin)

@@ -52,7 +52,6 @@ class Migration(migrations.Migration):
                 ('content', models.TextField(verbose_name=b'\xe6\x96\x87\xe7\xab\xa0\xe5\x86\x85\xe5\xae\xb9')),
                 ('thumbsup', models.IntegerField(default=0, verbose_name=b'\xe7\x82\xb9\xe8\xb5\x9e\xe9\x87\x8f')),
                 ('date_publish', models.DateTimeField(verbose_name=b'\xe5\x8f\x91\xe5\xb8\x83\xe6\x97\xb6\xe9\x97\xb4')),
-                ('user', models.ForeignKey(verbose_name=b'\xe7\x94\xa8\xe6\x88\xb7', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': ['-date_publish'],
@@ -67,7 +66,6 @@ class Migration(migrations.Migration):
                 ('content', models.TextField(verbose_name=b'\xe8\xaf\x84\xe8\xae\xba\xe5\x86\x85\xe5\xae\xb9')),
                 ('thumbsup', models.IntegerField(default=0, verbose_name=b'\xe7\x82\xb9\xe8\xb5\x9e\xe9\x87\x8f')),
                 ('date_publish', models.DateTimeField(verbose_name=b'\xe5\x8f\x91\xe5\xb8\x83\xe6\x97\xb6\xe9\x97\xb4')),
-                ('article', models.ForeignKey(verbose_name=b'\xe6\x89\x80\xe5\xb1\x9e\xe6\x96\x87\xe7\xab\xa0', blank=True, to='home.Article', null=True)),
                 ('user', models.ForeignKey(verbose_name=b'\xe8\xaf\x84\xe8\xae\xba\xe7\x94\xa8\xe6\x88\xb7', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
@@ -79,36 +77,38 @@ class Migration(migrations.Migration):
             name='Follow',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('followee', models.ForeignKey(verbose_name=b'\xe8\xa2\xab\xe5\x85\xb3\xe6\xb3\xa8\xe4\xba\xba', to=settings.AUTH_USER_MODEL)),
+                ('followee', models.ForeignKey(related_name='followee_id', verbose_name=b'\xe8\xa2\xab\xe5\x85\xb3\xe6\xb3\xa8\xe4\xba\xba', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('follower', models.ForeignKey(related_name='follower_id', verbose_name=b'\xe5\x85\xb3\xe6\xb3\xa8\xe4\xba\xba', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
                 'ordering': ['-id'],
-                'verbose_name': '\u5173\u6ce8\u4eba',
-                'verbose_name_plural': '\u5173\u6ce8\u4eba',
+                'verbose_name': '\u5173\u6ce8',
+                'verbose_name_plural': '\u5173\u6ce8',
             },
         ),
         migrations.CreateModel(
             name='Message',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('content', models.TextField(null=True, verbose_name=b'\xe4\xbf\xa1\xe6\x81\xaf\xe5\x86\x85\xe5\xae\xb9', blank=True)),
+                ('content', models.TextField(null=True, verbose_name=b'\xe7\xa7\x81\xe4\xbf\xa1\xe5\x86\x85\xe5\xae\xb9', blank=True)),
                 ('date_publish', models.DateTimeField(null=True, verbose_name=b'\xe5\x8f\x91\xe5\xb8\x83\xe6\x97\xb6\xe9\x97\xb4', blank=True)),
-                ('user', models.ForeignKey(verbose_name=b'\xe4\xbf\xa1\xe6\x81\xaf\xe7\x94\xa8\xe6\x88\xb7', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('from_user', models.ForeignKey(related_name='from_user_id', verbose_name=b'\xe5\x8f\x91\xe4\xbf\xa1\xe4\xba\xba', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('to_user', models.ForeignKey(related_name='to_user_id', verbose_name=b'\xe6\x94\xb6\xe4\xbf\xa1\xe4\xba\xba', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
-                'verbose_name': '\u6d88\u606f',
-                'verbose_name_plural': '\u6d88\u606f',
+                'verbose_name': '\u79c1\u4fe1',
+                'verbose_name_plural': '\u79c1\u4fe1',
             },
         ),
         migrations.CreateModel(
             name='Question',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('title', models.CharField(max_length=256, verbose_name=b'\xe9\x97\xae\xe9\xa2\x98\xe5\x90\x8d')),
+                ('title', models.CharField(max_length=128, verbose_name=b'\xe9\x97\xae\xe9\xa2\x98\xe5\x90\x8d')),
                 ('desc', models.TextField(max_length=256, verbose_name=b'\xe6\x96\x87\xe7\xab\xa0\xe6\x8f\x8f\xe8\xbf\xb0')),
                 ('date_publish', models.DateTimeField(verbose_name=b'\xe5\x8f\x91\xe5\xb8\x83\xe6\x97\xb6\xe9\x97\xb4')),
                 ('focus_num', models.IntegerField(default=0, verbose_name=b'\xe5\x85\xb3\xe6\xb3\xa8\xe9\x87\x8f')),
-                ('article', models.ForeignKey(verbose_name=b'\xe6\x96\x87\xe7\xab\xa0', to='home.Article')),
+                ('article', models.ForeignKey(verbose_name=b'\xe6\x96\x87\xe7\xab\xa0', blank=True, to='home.Article', null=True)),
             ],
             options={
                 'ordering': ['-date_publish'],
@@ -120,7 +120,7 @@ class Migration(migrations.Migration):
             name='Tag',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=30, verbose_name=b'\xe6\xa0\x87\xe7\xad\xbe\xe5\x90\x8d\xe7\xa7\xb0')),
+                ('name', models.CharField(unique=True, max_length=30, verbose_name=b'\xe6\xa0\x87\xe7\xad\xbe\xe5\x90\x8d\xe7\xa7\xb0')),
             ],
             options={
                 'verbose_name': '\u6807\u7b7e',
@@ -131,5 +131,15 @@ class Migration(migrations.Migration):
             model_name='question',
             name='tag',
             field=models.ManyToManyField(to='home.Tag', verbose_name=b'\xe6\xa0\x87\xe7\xad\xbe'),
+        ),
+        migrations.AddField(
+            model_name='article',
+            name='comment',
+            field=models.ForeignKey(default=b'', verbose_name=b'\xe8\xaf\x84\xe8\xae\xba', to='home.Comment'),
+        ),
+        migrations.AddField(
+            model_name='article',
+            name='user',
+            field=models.OneToOneField(verbose_name=b'\xe7\x94\xa8\xe6\x88\xb7', to=settings.AUTH_USER_MODEL),
         ),
     ]

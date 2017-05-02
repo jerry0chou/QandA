@@ -1,12 +1,13 @@
 {% load staticfiles %}
-{% for question in question_list %}
+{% for index in index_content %}
 <div class="alert alert-info ">
     <div class="row">
         <div class="col-md-2">
             <img src="{% static "img/pic02.jpg" %}" width="300" class="img-responsive img-thumbnail"/>
         </div>
         <div class="col-md-8 ">
-            <p>作者名</p>
+            <p>{{ index.article.user.nickname }}</p>
+            <p>{{ index.article.user.self_description }}</p>
         </div>
         <div class="col-md-2">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -14,23 +15,30 @@
     </div>
     <div class="row">
         <div class="col-md-2">
-            <span class="label label-info">{{ question.tag }}</span>
+            {% for t in index.question_tag %}
+                <span class="label label-info">{{ t }}</span>
+            {% endfor %}
         </div>
     </div>
     <br>
     <div class="row">
         <div class="col-md-12">
-            <h3>{{ question.title }}</h3>
+           <a href=""><h3>{{ index.question_title }}</h3></a>
         </div>
     </div>
-    <div>
-       内容
-    </div>
+
+    {% autoescape off %}
+
+                {{ index.simple_desc|truncatewords_html:10}}
+
+    {% endautoescape %}
+
+
     <hr/>
     <h4>
         <span class="glyphicon glyphicon-comment"><code>45</code>&nbsp;</span>
-        <span class="glyphicon glyphicon-heart"><code>{{ question.focus_num }}</code>&nbsp;</span>
-        <span class="glyphicon glyphicon-calendar"><code>{{ question.date_publish }}</code>&nbsp;</span>
+        <span class="glyphicon glyphicon-heart"><code>{{ index.focus_num }}</code>&nbsp;</span>
+        <span class="glyphicon glyphicon-calendar"><code>{{ index.date_publish|date:"F j, Y" }}</code>&nbsp;</span>
     </h4>
 </div>
 {% endfor %}

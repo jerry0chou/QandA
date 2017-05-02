@@ -1,16 +1,44 @@
 # -*- coding: utf-8 -*-
+from django.db.models import Max
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
-from home.models import User,Article,Message,Question
+from home.models import User, Article, Message, Question
 from home.verify import verify_username, verify_phone, verify_pwd
 import json
+import re
+
+dr = re.compile(r'<[^>]+>', re.S)
+
+
+class Elem():
+    def __init__(self):
+        self.question_id = 0
+        self.question_title = ''
+        self.date_publish = ''
+        self.question_tag = None
+        self.focus_num = 0
+        self.simple_desc = None
 
 
 def global_setting(request):
     client = request.session.get('client', default=None)
-    article_list=Article.objects.all()
+
+    index_content = []
     question_list = Question.objects.all()
+    for question in question_list:
+        elem = Elem()
+        elem.question_id = question.id
+        elem.question_title = question.title
+        elem.date_publish = question.date_publish
+        elem.question_tag = tag = question.tag.all()[:2]
+        elem.focus_num = question.focus_num
+        article = question.article.annotate(Max('thumbsup'))[0]
+        dr = re.compile(r'<[^>]+>', re.S)
+        dd = dr.sub('', article.content)
+        elem.simple_desc=dd
+        index_content.append(elem)
+
     test = range(3)
     return locals()
 
@@ -44,7 +72,7 @@ def login_reg(request):
             pwd = request.POST['password']
             pwd2 = request.POST['password2']
             sex = request.POST['sex']
-            print name,nickname, phone, pwd, pwd2, sex
+            print name, nickname, phone, pwd, pwd2, sex
             name_dic = verify_username(name)
             phone_dic = verify_phone(phone)
             pwd_dic = verify_pwd(pwd, pwd2)
@@ -52,7 +80,7 @@ def login_reg(request):
             if dictMerged['phone'] == '' and dictMerged['name'] == '' and dictMerged['pwd'] == '':
                 user = User()
                 user.username = name
-                user.nickname=nickname
+                user.nickname = nickname
                 user.mobile = phone
                 user.password = pwd
                 user.sex = sex
@@ -85,5 +113,5 @@ def profile(request):
 
 def inbox(request):
     client = request.session.get('client', default=None)
-    message_list=Message.objects.filter(user_id=client.id)
+    message_list = Message.objects.filter(user_id=client.id)
     return render(request, 'inbox.html', locals())

@@ -2,11 +2,18 @@
 from django.db import models
 
 from django.contrib.auth.models import AbstractUser
+import re
+import sys
+
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 
 # 用户模型.
 # 第一种：采用的继承方式扩展用户信息（本系统采用）
 # 扩展：关联的方式去扩展用户信息
+
+
 class User(AbstractUser):
     nickname = models.CharField(max_length=50, default='', verbose_name='昵称')
     mobile = models.CharField(max_length=11, blank=True, null=True, unique=True, verbose_name='手机号码')
@@ -19,16 +26,36 @@ class User(AbstractUser):
         ordering = ['-id']
 
     def __unicode__(self):
-        return self.username
+        if self.nickname is not None:
+            return self.nickname
+        else:
+            return self.username
 
 
 class Follow(models.Model):
-    followee = models.ForeignKey(User, verbose_name='被关注人')
+    follower = models.ForeignKey(User, blank=True, null=True, related_name='follower_id', verbose_name='关注人')
+    followee = models.ForeignKey(User, blank=True, null=True, related_name='followee_id', verbose_name='被关注人')
 
     class Meta:
-        verbose_name = '关注人'
+        verbose_name = '关注'
         verbose_name_plural = verbose_name
         ordering = ['-id']
+        unique_together = (("follower", "followee"),)
+
+    def __unicode__(self):
+        return str(self.id)
+
+
+class Message(models.Model):
+    from_user = models.ForeignKey(User, related_name='from_user_id', blank=True, null=True, verbose_name='发信人')
+    to_user = models.ForeignKey(User, related_name='to_user_id', blank=True, null=True, verbose_name='收信人')
+    content = models.TextField(verbose_name='私信内容', blank=True, null=True)
+    date_publish = models.DateTimeField(auto_now_add=False, verbose_name='发布时间', blank=True, null=True)
+
+    class Meta:
+        verbose_name = '私信'
+        verbose_name_plural = verbose_name
+        unique_together = (("from_user", "to_user"),)
 
     def __unicode__(self):
         return str(self.id)
@@ -36,7 +63,7 @@ class Follow(models.Model):
 
 # tag（标签）
 class Tag(models.Model):
-    name = models.CharField(max_length=30,unique=True, verbose_name='标签名称')
+    name = models.CharField(max_length=30, unique=True, verbose_name='标签名称')
 
     class Meta:
         verbose_name = '标签'
@@ -46,11 +73,27 @@ class Tag(models.Model):
         return self.name
 
 
+# 评论模型
+class Comment(models.Model):
+    content = models.TextField(verbose_name='评论内容')
+    user = models.ForeignKey(User, blank=True, null=True, verbose_name='评论用户')
+    thumbsup = models.IntegerField(default=0, verbose_name='点赞量')
+    date_publish = models.DateTimeField(auto_now_add=False, verbose_name='发布时间')
+
+    class Meta:
+        verbose_name = '评论'
+        verbose_name_plural = verbose_name
+
+    def __unicode__(self):
+        return self.content
+
+
 class Article(models.Model):
     content = models.TextField(verbose_name='文章内容')
     thumbsup = models.IntegerField(default=0, verbose_name='点赞量')
     date_publish = models.DateTimeField(auto_now_add=False, verbose_name='发布时间')
-    user = models.ForeignKey(User, verbose_name='用户')
+    user = models.OneToOneField(User, verbose_name='用户')
+    comment = models.ManyToManyField(Comment, blank=True, null=True, verbose_name='评论')
 
     class Meta:
         verbose_name = '文章'
@@ -66,7 +109,7 @@ class Question(models.Model):
     desc = models.TextField(max_length=256, verbose_name='文章描述')
     date_publish = models.DateTimeField(auto_now_add=False, verbose_name='发布时间')
     focus_num = models.IntegerField(default=0, verbose_name='关注量')
-    article = models.ForeignKey(Article,blank=True, null=True, verbose_name='文章')
+    article = models.ManyToManyField(Article, blank=True, null=True, verbose_name='文章')
     tag = models.ManyToManyField(Tag, verbose_name='标签')
 
     class Meta:
@@ -76,32 +119,3 @@ class Question(models.Model):
 
     def __unicode__(self):
         return self.title
-
-
-# 评论模型
-class Comment(models.Model):
-    content = models.TextField(verbose_name='评论内容')
-    user = models.ForeignKey(User, blank=True, null=True, verbose_name='评论用户')
-    article = models.ForeignKey(Article, blank=True, null=True, verbose_name='所属文章')
-    thumbsup = models.IntegerField(default=0, verbose_name='点赞量')
-    date_publish = models.DateTimeField(auto_now_add=False, verbose_name='发布时间')
-
-    class Meta:
-        verbose_name = '评论'
-        verbose_name_plural = verbose_name
-
-    def __unicode__(self):
-        return str(self.id)
-
-
-class Message(models.Model):
-    user = models.ForeignKey(User, blank=True, null=True, verbose_name='消息用户')
-    content = models.TextField(verbose_name='信息内容', blank=True, null=True)
-    date_publish = models.DateTimeField(auto_now_add=False, verbose_name='发布时间', blank=True, null=True)
-
-    class Meta:
-        verbose_name = '消息'
-        verbose_name_plural = verbose_name
-
-    def __unicode__(self):
-        return str(self.id)
