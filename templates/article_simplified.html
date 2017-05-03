@@ -1,45 +1,68 @@
 {% load staticfiles %}
 {% for index in index_content %}
-<div class="alert alert-info ">
-    <div class="row">
-        <div class="col-md-2">
-            <img src="{% static "img/pic02.jpg" %}" width="300" class="img-responsive img-thumbnail"/>
+    <div class="alert alert-info ">
+        <div class="row">
+            <div class="col-md-2">
+                <img src="{% static "img/pic02.jpg" %}" width="300" class="img-responsive img-thumbnail"/>
+            </div>
+            <div class="col-md-8 ">
+                <h4>{{ index.article.user.nickname }}</h4>
+                <p>{{ index.article.user.self_description }}</p>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
         </div>
-        <div class="col-md-8 ">
-            <p>{{ index.article.user.nickname }}</p>
-            <p>{{ index.article.user.self_description }}</p>
+
+        <div class="row">
+            <div class="col-md-12">
+                <a href="/article/?qid={{ index.question_id }}"><h3>{{ index.question_title }}</h3></a>
+            </div>
         </div>
-        <div class="col-md-2">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-        </div>
+
+        {% autoescape off %}
+
+            {{ index.simple_desc|truncatewords_html:10 }}
+
+        {% endautoescape %}
+        <hr/>
+        <h4>
+            {% load humanize %}
+            <span class="glyphicon glyphicon-comment"><code>45</code>&nbsp;</span>
+            <span class="glyphicon glyphicon-heart"><code>{{ index.focus_num }}</code>&nbsp;</span>
+            <span class="glyphicon glyphicon-calendar"><code>{{ index.date_publish|date:'Y年 M  j号  D' }}</code>&nbsp;</span>
+        </h4>
     </div>
-    <div class="row">
-        <div class="col-md-2">
-            {% for t in index.question_tag %}
-                <span class="label label-info">{{ t }}</span>
-            {% endfor %}
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-md-12">
-           <a href=""><h3>{{ index.question_title }}</h3></a>
-        </div>
-    </div>
-
-    {% autoescape off %}
-
-                {{ index.simple_desc|truncatewords_html:10}}
-
-    {% endautoescape %}
-
-
-    <hr/>
-    <h4>
-        <span class="glyphicon glyphicon-comment"><code>45</code>&nbsp;</span>
-        <span class="glyphicon glyphicon-heart"><code>{{ index.focus_num }}</code>&nbsp;</span>
-        <span class="glyphicon glyphicon-calendar"><code>{{ index.date_publish|date:"F j, Y" }}</code>&nbsp;</span>
-    </h4>
-</div>
 {% endfor %}
-<hr/>
+
+<div class="col-md-offset-2">
+    <ul class="pagination">
+
+        <li>
+            {% if pagenum > 1 %}
+                <a href="/?num={{ pagenum|add:"-1" }}">&laquo;上一页</a>
+            {% else %}
+                <a href="/?num=1">&laquo;上一页</a>
+            {% endif %}
+        </li>
+        {% for s in size %}
+            {% with i=forloop.counter %}
+                {% if i == pagenum %}
+                    <li class="active">
+                        {% else %}
+                    <li>
+                {% endif %}
+                <a href="/?num={{ i }}">{{ i }}</a>
+            {% endwith %}
+        </li>
+        {% endfor %}
+        <li>
+            {% if pagenum < length %}
+                <a href="/?num={{ pagenum|add:1 }}">{{ pagenum }}下一页{{ length }}&raquo;</a>
+            {% else %}
+                <a href="/?num={{ pagenum }}">下一页&raquo;</a>
+            {% endif %}
+        </li>
+
+    </ul>
+</div>

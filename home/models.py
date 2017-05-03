@@ -92,7 +92,7 @@ class Article(models.Model):
     content = models.TextField(verbose_name='文章内容')
     thumbsup = models.IntegerField(default=0, verbose_name='点赞量')
     date_publish = models.DateTimeField(auto_now_add=False, verbose_name='发布时间')
-    user = models.OneToOneField(User, verbose_name='用户')
+    user = models.ForeignKey(User, verbose_name='用户')
     comment = models.ManyToManyField(Comment, blank=True, null=True, verbose_name='评论')
 
     class Meta:

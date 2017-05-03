@@ -6,9 +6,7 @@
 				<div class="col-md-8  well">
 					<span class="glyphicon glyphicon-list-alt">&nbsp;<strong>最新动态</strong></span>
 					{% include 'article_simplified.html' %}
-					<div class="col-md-offset-2">
-                        {% include 'pagination.html' %}
-					</div>
+
 				</div>
 				<div class="col-md-4  ">
 					<div class="row well">
@@ -30,10 +28,10 @@
 											<a href="#NewQues" id="NewQues-tab" data-toggle="tab">最新提问</a>
 										</li>
 										<li>
-											<a href="#MostPraise" id="MostPraise-tab" data-toggle="tab">最多点赞</a>
+											<a href="#MostFocus" id="MostFocus-tab" data-toggle="tab">最多关注</a>
 										</li>
 										<li>
-											<a href="#MostComment" id="MostComment-tab" data-toggle="tab">最多评论</a>
+											<a href="#MostReply" id="MostReply-tab" data-toggle="tab">最多回答</a>
 										</li>
 									</ul>
 								</div>
@@ -42,23 +40,29 @@
 							<div class="tab-content">
 								<div class="tab-pane fade active in" id="NewQues">
 									<div class="list-group">
-										<a href="#" class="list-group-item " style="background-color: #f2dede;">最新提问1<span class="badge">14</span></a>
-										<a href="#" class="list-group-item" style="background-color: #fcf8e3;">最新提问2<span class="badge">8</span></a>
-										<a href="#" class="list-group-item" style="background-color: #d9edf7;">最新提问3<span class="badge">5</span></a>
+                                        {% for newq in NewQues %}
+										<a href="/article/?qid={{ newq.id }}" class="list-group-item " style="background-color:{% cycle '#f2dede'  '#fcf8e3' '#d9edf7' %};">{{ newq.title }}
+                                            <br><small style="color: gray">{{ newq.date_publish|date:'M  j号 Y年' }}</small>
+                                        </a>
+									    {% endfor %}
+                                    </div>
+								</div>
+								<div class="tab-pane fade " id="MostFocus">
+									<div class="list-group">
+										{% for focus in MostFocus %}
+										<a href="/article/?qid={{ focus.id }}" class="list-group-item " style="background-color:{% cycle '#f2dede'  '#fcf8e3' '#d9edf7' %};">{{ focus.title }}
+                                            <br><small style="color: gray">{{ focus.focus_num }}个关注</small>
+                                        </a>
+									    {% endfor %}
 									</div>
 								</div>
-								<div class="tab-pane fade " id="MostPraise">
+								<div class="tab-pane fade " id="MostReply">
 									<div class="list-group">
-										<a href="#" class="list-group-item " style="background-color: #f2dede;">最多点赞1<span class="badge">14</span></a>
-										<a href="#" class="list-group-item" style="background-color: #fcf8e3;">最多点赞2<span class="badge">8</span></a>
-										<a href="#" class="list-group-item" style="background-color: #d9edf7;">最多点赞3<span class="badge">5</span></a>
-									</div>
-								</div>
-								<div class="tab-pane fade " id="MostComment">
-									<div class="list-group">
-										<a href="#" class="list-group-item " style="background-color: #f2dede;">最多评论1<span class="badge">14</span></a>
-										<a href="#" class="list-group-item" style="background-color: #fcf8e3;">最多评论2<span class="badge">8</span></a>
-										<a href="#" class="list-group-item" style="background-color: #d9edf7;">最多评论3<span class="badge">5</span></a>
+										{% for reply in MostReply %}
+										<a href="/article/?qid={{ reply.id }}" class="list-group-item " style="background-color:{% cycle '#f2dede'  '#fcf8e3' '#d9edf7' %};">{{ reply.title }}
+                                            <br><small style="color: gray">{{ reply.count }}个回答</small>
+                                        </a>
+									    {% endfor %}
 									</div>
 								</div>
 							</div>

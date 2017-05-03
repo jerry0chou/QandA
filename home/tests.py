@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.db.models import Max
+from django.db.models import Max, Count
 from django.test import TestCase
 from home.models import *
 
@@ -14,27 +14,23 @@ dr = re.compile(r'<[^>]+>', re.S)
 
 
 # Create your tests here.
-class Elem():
-    pass
-
-def page(question_list):
-    index_content = []
-    for question in question_list:
-        elem = Elem()
-        elem.question_id = question.id
-        elem.question_title = question.title
-        elem.date_publish = question.date_publish
-        elem.question_tag = tag = question.tag.all()[:2]
-        elem.focus_num = question.focus_num
-        elem.article = question.article.annotate(Max('thumbsup'))[0]
-        index_content.append(elem)
-    return index_content
+class MostReply:
+    def __init__(self):
+        self.id=0
+        self.count=0
+        self.title=''
 
 class TestCase(TestCase):
+    question_list=Question.objects.annotate(count=Count('article')).values('count','title','id').order_by('-count')[:3]
 
-    question_list = Question.objects.all()
-    index_content=page(question_list)
-    for index in index_content:
-        print index.question_title, index.date_publish, index.article.user.nickname
-        for t in index.question_tag:
-            print unicode(t)
+    reply_list=[]
+    for q in question_list:
+        reply = MostReply()
+        reply.count=q['count']
+        reply.title=unicode(q['title'])
+        reply.id=q['id']
+        reply_list.append(reply)
+
+    for reply in reply_list:
+        print reply.count,reply.title,reply.id
+

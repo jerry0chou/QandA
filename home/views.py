@@ -1,49 +1,50 @@
 # -*- coding: utf-8 -*-
-from django.db.models import Max
+from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from home.models import User, Article, Message, Question
 from home.verify import verify_username, verify_phone, verify_pwd
+from handle import getSequence, showPage, getMostReply
 import json
-import re
-
-dr = re.compile(r'<[^>]+>', re.S)
-
-
-class Elem():
-    def __init__(self):
-        self.question_id = 0
-        self.question_title = ''
-        self.date_publish = ''
-        self.question_tag = None
-        self.focus_num = 0
-        self.simple_desc = None
 
 
 def global_setting(request):
     client = request.session.get('client', default=None)
 
-    index_content = []
-    question_list = Question.objects.all()
-    for question in question_list:
-        elem = Elem()
-        elem.question_id = question.id
-        elem.question_title = question.title
-        elem.date_publish = question.date_publish
-        elem.question_tag = tag = question.tag.all()[:2]
-        elem.focus_num = question.focus_num
-        article = question.article.annotate(Max('thumbsup'))[0]
-        dr = re.compile(r'<[^>]+>', re.S)
-        dd = dr.sub('', article.content)
-        elem.simple_desc=dd
-        index_content.append(elem)
+    NewQues = Question.objects.all().order_by('-date_publish')[:3]
 
-    test = range(3)
+    MostFocus = Question.objects.all().order_by('-focus_num')[:3]
+
+    question_list = Question.objects.annotate(count=Count('article')).values('count', 'title', 'id').order_by('-count')[
+                    :3]
+
+    MostReply = getMostReply(question_list)
+
     return locals()
 
 
+@csrf_exempt
 def index(request):
+    num = request.GET.get('num')
+
+    Qlist = Question.objects.all().order_by('-focus_num')  # 查询
+    length = len(Qlist)
+    result = getSequence(length, 2)  # 每两个为一页
+    size = range(len(result))  # 这个是列表
+    length = len(size)
+
+    if num is None:
+        pagenum = 1
+        index_content = showPage(Qlist, result, 0)
+    else:
+        try:
+            pagenum = int(num)
+            if pagenum - 1 in size:
+                index_content = showPage(Qlist, result, pagenum - 1)
+        except Exception:
+            print Exception.message, '类型转换有问题'
+
     return render(request, 'index.html', locals())
 
 
@@ -104,6 +105,8 @@ def logout(request):
 
 
 def article(request):
+    qid = request.GET.get('qid')
+    print type(qid), qid  # unicode
     return render(request, 'article_detail.html', locals())
 
 
@@ -113,5 +116,6 @@ def profile(request):
 
 def inbox(request):
     client = request.session.get('client', default=None)
-    message_list = Message.objects.filter(user_id=client.id)
+    if client:
+        message_list = Message.objects.filter(user_id=client.id)
     return render(request, 'inbox.html', locals())
