@@ -28,7 +28,7 @@
         <hr/>
         <h4>
             {% load humanize %}
-            <span class="glyphicon glyphicon-comment"><code>45</code>&nbsp;</span>
+{#            <span class="glyphicon glyphicon-comment"><code>45</code>&nbsp;</span>#}
             <span class="glyphicon glyphicon-heart"><code>{{ index.focus_num }}</code>&nbsp;</span>
             <span class="glyphicon glyphicon-calendar"><code>{{ index.date_publish|date:'Y年 M  j号  D' }}</code>&nbsp;</span>
         </h4>
@@ -58,7 +58,7 @@
         {% endfor %}
         <li>
             {% if pagenum < length %}
-                <a href="/?num={{ pagenum|add:1 }}">{{ pagenum }}下一页{{ length }}&raquo;</a>
+                <a href="/?num={{ pagenum|add:1 }}">下一页&raquo;</a>
             {% else %}
                 <a href="/?num={{ pagenum }}">下一页&raquo;</a>
             {% endif %}

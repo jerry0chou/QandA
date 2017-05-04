@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from home.models import User, Article, Message, Question
 from home.verify import verify_username, verify_phone, verify_pwd
-from handle import getSequence, showPage, getMostReply
+from handle import getSequence, showPage, getMostReply,getArticleCommet
 import json
 
 
@@ -107,6 +107,7 @@ def logout(request):
 def article(request):
     qid = request.GET.get('qid')
     print type(qid), qid  # unicode
+    ques_article=getArticleCommet(int(qid))
     return render(request, 'article_detail.html', locals())
 
 
@@ -117,5 +118,5 @@ def profile(request):
 def inbox(request):
     client = request.session.get('client', default=None)
     if client:
-        message_list = Message.objects.filter(user_id=client.id)
+        message_list = Message.objects.filter( to_user_id=client.id)
     return render(request, 'inbox.html', locals())
