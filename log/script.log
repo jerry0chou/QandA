@@ -1,3 +1,0 @@
-2017-04-29 15:39:12,016 [Thread-2:6972] [django.request:170] [base:get_response] [WARNING]- Not Found: /favicon.ico
-2017-04-29 15:39:13,911 [Thread-5:1732] [django.request:170] [base:get_response] [WARNING]- Not Found: /favicon.ico
-2017-04-29 15:50:27,006 [Thread-14:3712] [django.request:170] [base:get_response] [WARNING]- Not Found: /favicon.ico

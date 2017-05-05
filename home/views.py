@@ -3,9 +3,9 @@ from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
-from home.models import User, Article, Message, Question
+from home.models import User, Follow, Message, Question
 from home.verify import verify_username, verify_phone, verify_pwd
-from handle import getSequence, showPage, getMostReply,getArticleCommet
+from handle import getSequence, showPage, getMostReply, getArticleCommet,getFollowee,saveComment
 import json
 
 
@@ -18,6 +18,8 @@ def global_setting(request):
 
     question_list = Question.objects.annotate(count=Count('article')).values('count', 'title', 'id').order_by('-count')[
                     :3]
+
+    follow_list=getFollowee(client.id)
 
     MostReply = getMostReply(question_list)
 
@@ -57,9 +59,7 @@ def login_reg(request):
             user_set = User.objects.filter(username=name, password=pwd)
             client = User()
             for u in user_set:
-                print u.username, u.sex, u.self_description, u.password, 'user_set'
                 client = u
-            print client.username, client.sex, client.self_description, client.password, 'client_set'
             if client.username:
                 request.session['client'] = client
                 return HttpResponse('ok')
@@ -73,7 +73,6 @@ def login_reg(request):
             pwd = request.POST['password']
             pwd2 = request.POST['password2']
             sex = request.POST['sex']
-            print name, nickname, phone, pwd, pwd2, sex
             name_dic = verify_username(name)
             phone_dic = verify_phone(phone)
             pwd_dic = verify_pwd(pwd, pwd2)
@@ -86,7 +85,6 @@ def login_reg(request):
                 user.password = pwd
                 user.sex = sex
                 user.save()
-            print json.dumps(dictMerged)
             return HttpResponse(json.dumps(dictMerged))
     else:
         return render(request, 'login_reg.html', locals())
@@ -95,8 +93,6 @@ def login_reg(request):
 @csrf_exempt
 def logout(request):
     client = request.session.get('client', default=None)
-    print client, 'logout'
-    print client.mobile, 'logout'
     if client:
         del request.session['client']
         return HttpResponse('ok')
@@ -104,11 +100,42 @@ def logout(request):
         return HttpResponse('please login')
 
 
+@csrf_exempt
 def article(request):
+    followerId = request.GET.get('follower_id')
+    followeeIid = request.GET.get('followee_id')
+    followTip= request.GET.get('follow_tip')
     qid = request.GET.get('qid')
-    print type(qid), qid  # unicode
-    ques_article=getArticleCommet(int(qid))
-    return render(request, 'article_detail.html', locals())
+
+    user_id=request.GET.get('user_id')
+    comment_text=request.GET.get('comment_text')
+    article_id=request.GET.get('article_id')
+
+    from_user_id=request.GET.get('from_user_id')
+    to_user_id=request.GET.get('to_user_id')
+    message_text=request.GET.get('message_text')
+
+    if followerId and followeeIid:
+        if followTip =='cancel':
+            foll=Follow.objects.get(follower_id=int(followerId),followee_id=followeeIid)
+            foll.delete()
+            return HttpResponse('canceled')
+        elif followTip == 'ok':
+            foll=Follow(follower_id=int(followerId),followee_id=followeeIid)
+            foll.save()
+            return HttpResponse('focused')
+
+    elif qid :
+        ques_article = getArticleCommet(int(qid))
+        return render(request, 'article_detail.html', locals())
+
+    elif user_id and comment_text and article_id:
+        saveComment(uid=user_id,content=comment_text,aid=article_id)
+        return  HttpResponse('ok')
+
+    elif from_user_id and to_user_id and message_text:
+        print from_user_id,to_user_id,message_text
+        return HttpResponse('ok')
 
 
 def profile(request):
@@ -118,5 +145,5 @@ def profile(request):
 def inbox(request):
     client = request.session.get('client', default=None)
     if client:
-        message_list = Message.objects.filter( to_user_id=client.id)
+        message_list = Message.objects.filter(to_user_id=client.id)
     return render(request, 'inbox.html', locals())

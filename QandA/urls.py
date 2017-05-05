@@ -28,7 +28,6 @@ urlpatterns = [
     url(r'^admin/upload/(?P<dir_name>[^/]+)$', upload_image, name='upload_image'),
 
     url(r'^$', views.index, name='index'),
-    #url(r'^(?P<num>\d+)/$', views.index, name='index'),
     url(r'^login_reg/$', views.login_reg, name='login_reg'),
     url(r'^article/$', views.article, name='article'),
     url(r'^profile/$', views.profile, name='profile'),

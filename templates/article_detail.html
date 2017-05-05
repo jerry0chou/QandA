@@ -1,6 +1,7 @@
 {% extends 'headbar.html' %}
 {% load staticfiles %}
 {% block main_content %}
+    {% include 'leave_message.html' %}
     <div class="container">
         <div class="row">
             <div class="col-md-12 well">
@@ -69,14 +70,33 @@
                                          class="img-responsive img-thumbnail"/>
                                 </div>
                                 <div class="col-md-7">
-                                    <h4>{{ article.user.nickname }}</h4>
+                                    {% if article.user.nickname %}
+                                        <h4>{{ article.user.nickname }}</h4>
+                                    {% else %}
+                                        <h4>{{ article.user.username }}</h4>
+                                    {% endif %}
                                     <p style="color: gray">{{ article.user.self_description }}</p>
                                 </div>
                                 <div class="col-md-3">
-                                    <button type="button" class="btn btn-primary"><span
-                                            class="glyphicon glyphicon-plus">关注</span></button>
-                                    <button type="button" class="btn btn-primary"><span
-                                            class="glyphicon glyphicon-envelope">私信</span></button>
+                                    {% if article.user.id in follow_list %}
+                                        <button name="focus" id="cancel" type="button"
+                                                class="btn btn-primary" value="{{ article.user.id }}">
+                                            取消关注
+                                        </button>
+                                    {% else %}
+                                        <button name="focus" id="ok" type="button"
+                                                class="btn btn-primary" value="{{ article.user.id }}">
+                                            关注
+                                        </button>
+                                    {% endif %}
+
+{#                                    <button type="button" class="btn btn-primary navbar-btn" data-toggle="modal"#}
+{#                                            data-target="#myModal">提问#}
+{#                                    </button>#}
+                                    <button name="message" type="button" class="btn btn-primary" data-toggle="modal"
+{#                                            data-target="#leave_message"#}
+                                            userId="{{ article.user.id }}" who="{{ article.user.nickname }}">私信
+                                    </button>
                                 </div>
                             </div>
                             <div class="col-md-12">
@@ -88,8 +108,10 @@
                             </div>
 
                             <hr/>
-                            <h4><a data-toggle="collapse" href="#collapseComment{{ i }}"><span
-                                    class="glyphicon glyphicon-comment"><code>{{ article.comments_length }}</code>&nbsp;</span></a>
+                            <h4>
+                                <a data-toggle="collapse" href="#collapseComment{{ i }}"><span
+                                        class="glyphicon glyphicon-comment"><code>{{ article.comments_length }}</code>&nbsp;</span>
+                                </a>
                                 <span class="glyphicon glyphicon-thumbs-up"><code>{{ article.thumbsup }}</code>&nbsp;</span>
                                 <span class="glyphicon glyphicon-calendar"><code>{{ article.date_publish|date:'M  j号 Y年' }}</code>&nbsp;</span>
                             </h4>
@@ -122,4 +144,92 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            $('button[name="focus"]').click(function () {
+                var focusObject = $(this);
+                $.ajax({
+                    url: '{% url 'article' %}',
+                    type: 'get',
+                    dataType: 'text',
+                    data: {
+                        'follower_id': {{ client.id }},
+                        'followee_id': focusObject.val(),
+                        'follow_tip': focusObject.attr('id')
+                    },
+                    success: function (data) {
+                        if (data == 'canceled') {
+                            focusObject.html('关注');
+                        }
+                        else if (data == 'focused') {
+                            focusObject.html("取消关注");
+                        }
+                    },
+                    error: function () {
+                        alert('出现错误!');
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $('button[name="submitComment"]').click(function () {
+                var buttonObj = $(this);
+                var value = buttonObj.val()
+                var inputText = '#' + value
+                var inputName = $(inputText).attr('name')
+                var id_list_group = '#list_group' + inputName
+                //alert(id_list_group);
+                $.ajax({
+                    url: '{% url 'article' %}',
+                    type: 'get',
+                    dataType: 'text',
+                    data: {
+                        'user_id': {{ client.id }},
+                        'comment_text': $(inputText).val(),
+                        'article_id': inputName
+                    },
+                    success: function (data) {
+                        if (data == 'ok') {
+                            var string = '<a class="list-group-item "><div class="row"><div class="col-md-2"><img src="{% static "img/pic02.jpg" %}" width="80" class="img-responsive img-thumbnail"/></div><div class="col-md-7"><h4>{{ client.username }}</h4><p style="color: gray;">{{ client.self_description }}</p></div><div class="col-md-3"><p>刚刚发表</p></div></div><div class="row"><div class="col-md-10 col-md-offset-1"><h4 id="list_group_item_text">' + $(inputText).val() + '</h4></div></div><div class="row"><div class="col-md-offset-1"><span class="glyphicon glyphicon-thumbs-up"><code>0</code>&nbsp;</span></div></div></a>'
+                            $(id_list_group).append(string)
+                        }
+                    },
+                    error: function () {
+                        alert('出现错误!');
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $('button[name="message"]').click(function () {
+                var messageObject = $(this);
+                var userId=messageObject.attr('userId');
+                var who=messageObject.attr('who');
+                $('#messsage_to').html('私信给: '+who)
+                $('#leave_message').modal();
+                $('#sendTo').click(function () {
+                    alert($('#message_text').val())
+                });
+{#                $.ajax({#}
+{#                    url: '{% url 'article' %}',#}
+{#                    type: 'get',#}
+{#                    dataType: 'text',#}
+{#                    data: {#}
+{#                        'from_user_id': {{ client.id }},#}
+{#                        'message_text': $('#message_text').val(),#}
+{#                        'to_user_id': userId#}
+{#                    },#}
+{#                    success: function (data) {#}
+{#                        alert(data)#}
+{#                    },#}
+{#                    error: function () {#}
+{#                        alert('出现错误!');#}
+{#                    }#}
+{#                });#}
+            });
+        });
+    </script>
 {% endblock %}

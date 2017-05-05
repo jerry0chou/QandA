@@ -1,45 +1,53 @@
 {% load staticfiles %}
 <div class="collapse" id="collapseComment{{ i }}">
-    <div class="list-group">
+    <div class="list-group" id="list_group{{ article.id }}">
         {% for com in article.comments %}
-        <a class="list-group-item ">
-            <div class="row">
-                <div class="col-md-2">
-                    <img src="{% static "img/pic02.jpg" %}" width="80"
-                         class="img-responsive img-thumbnail"/>
+            <a class="list-group-item ">
+                <div class="row">
+                    <div class="col-md-2">
+                        <img src="{% static "img/pic02.jpg" %}" width="80"
+                             class="img-responsive img-thumbnail"/>
+                    </div>
+                    <div class="col-md-7">
+                        <h4>{{ com.user.username }}</h4>
+                        <p style="color: gray;">{{ com.user.self_description }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p>{{ com.date_publish|date:'M  j号 H i' }}发表</p>
+                    </div>
                 </div>
-                <div class="col-md-7">
-                    <h4>{{ com.user.username }}</h4>
-                    <p style="color: gray;">{{ com.user.self_description }}</p>
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1">
+                        <h4>{{ com.content }}</h4>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <p>{{ com.date_publish|date:'M  j号 H i'}}发表</p>
+                <div class="row">
+                    <div class="col-md-offset-1">
+                        <span class="glyphicon glyphicon-thumbs-up"><code>{{ com.thumbsup }}</code>&nbsp;</span>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-10 col-md-offset-1">
-                    <h4>{{ com.content }}</h4>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-offset-1">
-                    <span class="glyphicon glyphicon-thumbs-up"><code>{{ com.thumbsup }}</code>&nbsp;</span>
-                </div>
-            </div>
-        </a>
+            </a>
         {% endfor %}
+
+    </div>
+    <div class="list-group">
         <a class="list-group-item ">
             <form>
                 <div class="row">
                     <div class="col-md-10">
-                        <input type="text" class="form-control" name="comment" placeholder="来吐槽吧！" />
+                        <input type="text" id="comment{{ article.id }}" class="form-control" name="{{ article.id }}"
+                               placeholder="来吐槽吧！"/>
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary">提交评论</button>
+                        <button type="button" name="submitComment" value="comment{{ article.id }}"
+                                class="btn btn-primary">提交评论
+                        </button>
                     </div>
                 </div>
             </form>
         </a>
     </div>
+
 </div>
 </div>
+
