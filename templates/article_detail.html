@@ -78,7 +78,7 @@
                                     <p style="color: gray">{{ article.user.self_description }}</p>
                                 </div>
                                 <div class="col-md-3">
-                                    {% if article.user.id in follow_list %}
+                                    {% if article.user.id in followId_list %}
                                         <button name="focus" id="cancel" type="button"
                                                 class="btn btn-primary" value="{{ article.user.id }}">
                                             取消关注
@@ -90,11 +90,11 @@
                                         </button>
                                     {% endif %}
 
-{#                                    <button type="button" class="btn btn-primary navbar-btn" data-toggle="modal"#}
-{#                                            data-target="#myModal">提问#}
-{#                                    </button>#}
+                                    {#                                    <button type="button" class="btn btn-primary navbar-btn" data-toggle="modal"#}
+                                    {#                                            data-target="#myModal">提问#}
+                                    {#                                    </button>#}
                                     <button name="message" type="button" class="btn btn-primary" data-toggle="modal"
-{#                                            data-target="#leave_message"#}
+                                            {#                                            data-target="#leave_message"#}
                                             userId="{{ article.user.id }}" who="{{ article.user.nickname }}">私信
                                     </button>
                                 </div>
@@ -161,9 +161,11 @@
                     success: function (data) {
                         if (data == 'canceled') {
                             focusObject.html('关注');
+                            focusObject.attr('id','ok')
                         }
                         else if (data == 'focused') {
                             focusObject.html("取消关注");
+                            focusObject.attr('id','cancel')
                         }
                     },
                     error: function () {
@@ -206,29 +208,42 @@
         $(document).ready(function () {
             $('button[name="message"]').click(function () {
                 var messageObject = $(this);
-                var userId=messageObject.attr('userId');
-                var who=messageObject.attr('who');
-                $('#messsage_to').html('私信给: '+who)
+                var userId = messageObject.attr('userId');
+                var who = messageObject.attr('who');
+                $('#messsage_to').html('私信给: ' + who)
                 $('#leave_message').modal();
                 $('#sendTo').click(function () {
-                    alert($('#message_text').val())
+                    //alert(userId+$('#message_text').val()+{{ client.id }});
+
+                    $.ajax({
+                        url: '{% url 'article' %}',
+                        type: 'get',
+                        dataType: 'text',
+                        data: {
+                            'from_user_id': {{ client.id }},
+                            'message_text': $('#message_text').val(),
+                            'to_user_id': userId
+                        },
+                        success: function (data) {
+                            if (data == 'ok') {
+                                var string = '<p class="text-center text-primary" ><strong>发送成功</strong></p>';
+                                setTimeout(function () {
+                                    test();
+                                }, 10000);
+                                $('#privateMessageBody').append(string).delay('slow').fadeIn();
+
+                                setTimeout(function () {
+                                    test();
+                                }, 100000);
+                                $('#leave_message').modal('hide')
+                            }
+                        },
+                        error: function () {
+                            alert('出现错误!');
+                        }
+                    });
                 });
-{#                $.ajax({#}
-{#                    url: '{% url 'article' %}',#}
-{#                    type: 'get',#}
-{#                    dataType: 'text',#}
-{#                    data: {#}
-{#                        'from_user_id': {{ client.id }},#}
-{#                        'message_text': $('#message_text').val(),#}
-{#                        'to_user_id': userId#}
-{#                    },#}
-{#                    success: function (data) {#}
-{#                        alert(data)#}
-{#                    },#}
-{#                    error: function () {#}
-{#                        alert('出现错误!');#}
-{#                    }#}
-{#                });#}
+
             });
         });
     </script>

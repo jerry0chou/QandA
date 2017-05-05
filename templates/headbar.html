@@ -17,7 +17,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="#" class="navbar-brand " style="margin-left: 20px;color: #337ab7;font-size: x-large;">
+                <a href="{% url 'index' %}" class="navbar-brand " style="margin-left: 20px;color: #337ab7;font-size: x-large;">
                     QandA
                 </a>
             </div>
@@ -32,7 +32,7 @@
                 </form>
                 <ul class="nav navbar-nav">
                     <li class="active">
-                        <a><span class="glyphicon glyphicon-home">主页</span></a>
+                        <a href="{% url 'index' %}"><span class="glyphicon glyphicon-home">首页</span></a>
                     </li>
                     <li>
                         <a>话题</a>
@@ -71,7 +71,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="{% url 'profile' %}"><span
+                                    <a href="/profile/?uid={{ client.id }}"><span
                                             class="glyphicon glyphicon-home">&nbsp;我的主页</span></a>
                                 </li>
                                 <li>

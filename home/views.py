@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
+import json
+
 from django.db.models import Count
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+
+from handle import getSequence, showPage, getMostReply, getArticleCommet, saveComment, sendMessage, getFollowId, \
+    getFollowUsers
 from home.models import User, Follow, Message, Question
 from home.verify import verify_username, verify_phone, verify_pwd
-from handle import getSequence, showPage, getMostReply, getArticleCommet,getFollowee,saveComment
-import json
 
 
 def global_setting(request):
@@ -18,8 +21,8 @@ def global_setting(request):
 
     question_list = Question.objects.annotate(count=Count('article')).values('count', 'title', 'id').order_by('-count')[
                     :3]
-
-    follow_list=getFollowee(client.id)
+    if client:
+        followId_list = getFollowId(client.id)
 
     MostReply = getMostReply(question_list)
 
@@ -104,46 +107,49 @@ def logout(request):
 def article(request):
     followerId = request.GET.get('follower_id')
     followeeIid = request.GET.get('followee_id')
-    followTip= request.GET.get('follow_tip')
+    followTip = request.GET.get('follow_tip')
     qid = request.GET.get('qid')
 
-    user_id=request.GET.get('user_id')
-    comment_text=request.GET.get('comment_text')
-    article_id=request.GET.get('article_id')
+    user_id = request.GET.get('user_id')
+    comment_text = request.GET.get('comment_text')
+    article_id = request.GET.get('article_id')
 
-    from_user_id=request.GET.get('from_user_id')
-    to_user_id=request.GET.get('to_user_id')
-    message_text=request.GET.get('message_text')
+    from_user_id = request.GET.get('from_user_id')
+    to_user_id = request.GET.get('to_user_id')
+    message_text = request.GET.get('message_text')
 
     if followerId and followeeIid:
-        if followTip =='cancel':
-            foll=Follow.objects.get(follower_id=int(followerId),followee_id=followeeIid)
+        if followTip == 'cancel':
+            foll = Follow.objects.get(follower_id=int(followerId), followee_id=followeeIid)
             foll.delete()
             return HttpResponse('canceled')
         elif followTip == 'ok':
-            foll=Follow(follower_id=int(followerId),followee_id=followeeIid)
+            foll = Follow(follower_id=int(followerId), followee_id=followeeIid)
             foll.save()
             return HttpResponse('focused')
 
-    elif qid :
+    elif qid:
         ques_article = getArticleCommet(int(qid))
         return render(request, 'article_detail.html', locals())
 
     elif user_id and comment_text and article_id:
-        saveComment(uid=user_id,content=comment_text,aid=article_id)
-        return  HttpResponse('ok')
-
-    elif from_user_id and to_user_id and message_text:
-        print from_user_id,to_user_id,message_text
+        saveComment(uid=user_id, content=comment_text, aid=article_id)
         return HttpResponse('ok')
 
+    elif from_user_id and to_user_id and message_text:
+        sendMessage(from_id=from_user_id, to_id=to_user_id, content=message_text)
+        return HttpResponse('ok')
 
+@csrf_exempt
 def profile(request):
-    return render(request, 'profile.html', locals())
+    uid = request.GET.get('uid')
+    if uid:
+        followUsers = getFollowUsers(fid=uid)
+        return render(request, 'profile.html', locals())
 
-
+@csrf_exempt
 def inbox(request):
     client = request.session.get('client', default=None)
     if client:
-        message_list = Message.objects.filter(to_user_id=client.id)
+        message_list = Message.objects.filter(from_user_id=client.id)
     return render(request, 'inbox.html', locals())

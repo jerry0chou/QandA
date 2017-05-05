@@ -136,7 +136,7 @@ def getArticleCommet(qid):
     return ques_art
 
 
-def getFollowee(uid):
+def getFollowId(uid):
     id_list = Follow.objects.filter(follower_id=uid).values_list('followee_id')
     follow_list = []
     for id in id_list:
@@ -154,3 +154,21 @@ def saveComment(uid, content, aid):
     comment.save()
     article = Article.objects.get(id=aid)
     article.comment.add(comment)
+
+
+def sendMessage(from_id, to_id, content):
+    message = Message()
+    message.from_user_id = from_id
+    message.to_user_id = to_id
+    message.content = content
+    message.date_publish = datetime.datetime.now()
+    message.save()
+
+
+def getFollowUsers(fid):
+    follow_users = []
+    follow_list = Follow.objects.filter(follower_id=fid)
+    for follow in follow_list:
+        user = User.objects.get(id=follow.followee_id)
+        follow_users.append(user)
+    return follow_users
