@@ -46,9 +46,9 @@ class TagAdmin(admin.ModelAdmin):
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'desc', 'date_publish', 'focus_num',)
+    list_display = ('id', 'title', 'author','desc', 'date_publish', 'likes',)
     list_display_links = ('title',)
-    list_filter = ('date_publish', 'focus_num')
+    list_filter = ('date_publish', 'likes')
 
 
 admin.site.register(User, UserleAdmin)

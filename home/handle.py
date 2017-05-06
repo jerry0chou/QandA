@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from models import *
 from django.db.models import Max, Count
 import datetime
@@ -8,7 +9,7 @@ class Elem():
         self.question_id = 0
         self.question_title = ''
         self.date_publish = ''
-        self.focus_num = 0
+        self.likes = 0
         self.simple_desc = None
 
 
@@ -36,7 +37,7 @@ def getIndexPage(query):
         elem.question_id = question.id
         elem.question_title = question.title
         elem.date_publish = question.date_publish
-        elem.focus_num = question.focus_num
+        elem.likes = question.likes
         article = question.article.annotate(Max('thumbsup'))[0]
         elem.article = article
         dr = re.compile(r'<[^>]+>', re.S)
@@ -96,6 +97,8 @@ class Ques_Article:
     def __init__(self):
         self.qid = 0
         self.tags = []
+        self.queston_author=None
+        self.likes=0
         self.queston_decs = ''
         self.queston_title = ''
         self.articles = []
@@ -107,7 +110,9 @@ def getArticleCommet(qid):
     ques_art = Ques_Article()
     ques_art.qid = question.id
     ques_art.tags = question.tag.all()
+    ques_art.queston_author=question.author
     ques_art.queston_title = question.title
+    ques_art.likes=question.likes
     ques_art.queston_decs = question.desc
     count = Question.objects.filter(id=qid).annotate(count=Count('article')).values('count')[0]
     ques_art.article_count = count['count']
@@ -165,10 +170,41 @@ def sendMessage(from_id, to_id, content):
     message.save()
 
 
-def getFollowUsers(fid):
-    follow_users = []
-    follow_list = Follow.objects.filter(follower_id=fid)
-    for follow in follow_list:
-        user = User.objects.get(id=follow.followee_id)
-        follow_users.append(user)
-    return follow_users
+
+class Profile:
+    def __init__(self):
+        self.user=None
+        self.questions=[] #提问
+        self.answers=[]  # 回答
+        self.following_list=[]
+        self.following_count=0
+        self.followed_list=[]
+        self.followed_count=0
+
+def getProfile(uid):
+    pro = Profile()
+    u =  User.objects.get(id=uid)
+    pro.user = u
+    pro.questions = Question.objects.filter(author=u).order_by('date_publish')
+
+    arti = Article.objects.filter(user=u)
+    answers = Question.objects.filter(article=arti).order_by('date_publish')
+    pro.answers = answers
+
+    foing_list = []
+    followee_ids = Follow.objects.filter(follower_id=uid).values_list('followee_id')
+    for ids in followee_ids:
+        user = User.objects.get(id=ids[0])
+        foing_list.append(user)
+    pro.following_list = foing_list
+    pro.following_count = len(foing_list)
+
+    foed_list = []
+    follower_ids = Follow.objects.filter(followee_id=uid).values_list('follower_id')
+    for ids in follower_ids:
+        user = User.objects.get(id=ids[0])
+        foed_list.append(user)
+    pro.followed_list = foed_list
+    pro.followed_count = len(foed_list)
+
+    return pro

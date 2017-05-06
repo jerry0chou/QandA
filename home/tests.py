@@ -8,19 +8,39 @@ from home.models import *
 import datetime
 
 
-class inbox:
+class Profile:
     def __init__(self):
-        self.from_user = None
-        self.to_user = None
-        self.message_text = ''
-
+        self.user=None
+        self.questions=[] #提问
+        self.answers=[]  # 回答
+        self.following_list=[]
+        self.following_count=0
+        self.followed_list=[]
+        self.followed_count=0
 
 class TestCase(TestCase):
-    follow_users=[]
-    follow_list = Follow.objects.filter(follower_id=2)
-    for follow in follow_list:
-        user=User.objects.get(id=follow.followee_id)
-        follow_users.append(user)
 
+    pro=Profile()
+    u=User.objects.get(id=2)
+    pro.user=u
+    pro.questions=Question.objects.filter(author=u)
 
+    arti = Article.objects.filter(user=u)
+    answers = Question.objects.filter(article=arti)
+    pro.answers=answers
 
+    foing_list=[]
+    followee_ids=Follow.objects.filter(follower_id=2).values_list('followee_id')
+    for ids in followee_ids:
+        user=User.objects.get(id=ids[0])
+        foing_list.append(user)
+    pro.following_list=foing_list
+    pro.following_count=len(foing_list)
+
+    foed_list=[]
+    follower_ids=Follow.objects.filter(followee_id=2).values_list('follower_id')
+    for ids in follower_ids:
+        user=User.objects.get(id=ids[0])
+        foed_list.append(user)
+    pro.followed_list=foed_list
+    pro.followed_count=len(foed_list)

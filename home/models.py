@@ -92,7 +92,7 @@ class Article(models.Model):
     content = models.TextField(verbose_name='文章内容')
     thumbsup = models.IntegerField(default=0, verbose_name='点赞量')
     date_publish = models.DateTimeField(auto_now_add=False, verbose_name='发布时间')
-    user = models.ForeignKey(User, verbose_name='用户')
+    user = models.ForeignKey(User, verbose_name='作者')
     comment = models.ManyToManyField(Comment, blank=True, null=True, verbose_name='评论')
 
     class Meta:
@@ -108,9 +108,10 @@ class Question(models.Model):
     title = models.CharField(max_length=128, verbose_name='问题名')
     desc = models.TextField(max_length=256, verbose_name='文章描述')
     date_publish = models.DateTimeField(auto_now_add=False, verbose_name='发布时间')
-    focus_num = models.IntegerField(default=0, verbose_name='关注量')
+    likes = models.IntegerField(default=0, verbose_name='喜欢')
     article = models.ManyToManyField(Article, blank=True, null=True, verbose_name='文章')
     tag = models.ManyToManyField(Tag, verbose_name='标签')
+    author=models.ForeignKey(User,blank=True, null=True, verbose_name='作者')
 
     class Meta:
         verbose_name = '问题'

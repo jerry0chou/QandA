@@ -28,7 +28,7 @@
 											<a href="#NewQues" id="NewQues-tab" data-toggle="tab">最新提问</a>
 										</li>
 										<li>
-											<a href="#MostFocus" id="MostFocus-tab" data-toggle="tab">最多关注</a>
+											<a href="#MostLikes" id="MostLikes-tab" data-toggle="tab">最多喜爱</a>
 										</li>
 										<li>
 											<a href="#MostReply" id="MostReply-tab" data-toggle="tab">最多回答</a>
@@ -47,11 +47,11 @@
 									    {% endfor %}
                                     </div>
 								</div>
-								<div class="tab-pane fade " id="MostFocus">
+								<div class="tab-pane fade " id="MostLikes">
 									<div class="list-group">
-										{% for focus in MostFocus %}
-										<a href="/article/?qid={{ focus.id }}" class="list-group-item " style="background-color:{% cycle '#f2dede'  '#fcf8e3' '#d9edf7' %};">{{ focus.title }}
-                                            <br><small style="color: gray">{{ focus.focus_num }}个关注</small>
+										{% for like in MostLikes %}
+										<a href="/article/?qid={{ like.id }}" class="list-group-item " style="background-color:{% cycle '#f2dede'  '#fcf8e3' '#d9edf7' %};">{{ like.title }}
+                                            <br><small style="color: gray">{{ like.likes }}个喜爱</small>
                                         </a>
 									    {% endfor %}
 									</div>

@@ -7,6 +7,11 @@
                 <div class="col-md-12 column">
                     <div class="row ">
                         <div class="col-md-3 column">
+                            <div class="form-group">
+                                <div class="col-sm-10">
+                                    <h3 class="text-primary text-center">{{ profile.user.nickname }}</h3>
+                                </div>
+                            </div>
                             <img src="{% static "img/pic02.jpg" %}" width="300" class="img-responsive img-thumbnail"/>
                         </div>
                         <div class="col-md-9 column">
@@ -14,12 +19,13 @@
 
                                 <form class="form-horizontal">
                                     <div class="col-md-5 column">
+                                        <div style="margin-top: 10%"></div>
                                         <div class="row">
                                             <div class="col-xs-2 col-xs-offset-2">
                                                 <div class="form-group ">
                                                     <div class="radio">
                                                         <label><input type="radio" name="sex" value="male"
-                                                                {% if client.sex == False %}
+                                                                {% if profile.user.sex == False %}
                                                                       checked
                                                                 {% endif %}
                                                         />男</label>
@@ -30,7 +36,7 @@
                                                 <div class="form-group ">
                                                     <div class="radio">
                                                         <label><input type="radio" name="sex" value="female"
-                                                                {% if client.sex %}
+                                                                {% if profile.user.sex %}
                                                                       checked
                                                                 {% endif %}
                                                         />女</label>
@@ -41,24 +47,19 @@
                                         <div class="form-group">
                                             <div class="col-sm-10">
                                                 <textarea class="form-control" rows="1"
-                                                          placeholder="个性签名">{{ client.self_description }}</textarea>
+                                                          placeholder="个性签名">{{ profile.user.self_description }}</textarea>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" placeholder="手机号"
-                                                       value="{{ client.mobile }}"/>
+                                                       value="{{ profile.user.mobile }}"/>
                                             </div>
 
                                         </div>
                                     </div>
                                     <div class="col-md-5 column">
-                                        <div class="form-group">
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" placeholder="昵称"
-                                                       value="{{ client.nickname }}"/>
-                                            </div>
-                                        </div>
+                                        <div style="margin-top: 28%"></div>
                                         <div class="form-group">
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" placeholder="旧密码"/>
@@ -72,9 +73,8 @@
 
                                     </div>
                                     <div class="col-md-2 column ">
-                                        <div class="row" style="margin-top: 65px;">
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">提交修改</button>
+                                        <div style="margin-top: 100%"></div>
+                                        <button  class="btn btn-primary">提交修改</button>
                                     </div>
                                 </form>
                             </div>
@@ -95,28 +95,44 @@
                             <a href="#QUES" data-toggle="tab">提问</a>
                         </li>
                         <li>
-                            <a href="#FOLLOW" data-toggle="tab">关注</a>
+                            <a href="#FOLLOWING" data-toggle="tab">我关注谁</a>
+                        </li>
+                        <li>
+                            <a href="#FOLLOWED" data-toggle="tab">谁关注我</a>
                         </li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="ANS">
                             <ul class="list-group">
-                                <li class="list-group-item">
-                                    <a href="#">大家好</a><span class="badge">45</span></li>
-                                <li class="list-group-item">
-                                    <a href="#">大家好</a><span class="badge">45</span></li>
-                                <li class="list-group-item">
-                                    <a href="#">大家好</a><span class="badge">45</span></li>
+                                {% for ans in profile.answers %}
+
+                                    <li class="list-group-item">
+                                        <a href="/article/?qid={{ ans.id }}" class="list-group-item "
+                                           style="background-color:{% cycle '#f2dede'  '#fcf8e3' '#d9edf7' %};">{{ ans.title }}
+                                            <br>
+                                            <small style="color: gray">{{ ans.date_publish|date:'M  j号 Y年' }}</small>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+
                             </ul>
                         </div>
                         <div class="tab-pane" id="QUES">
                             <ul class="list-group">
-                                <li class="list-group-item">
-                                    <a href="#">第二部分</a><span class="badge">45</span></li>
+                                {% for ques in profile.questions %}
+
+                                    <li class="list-group-item">
+                                        <a href="/article/?qid={{ ques.id }}" class="list-group-item "
+                                           style="background-color:{% cycle '#f2dede'  '#fcf8e3' '#d9edf7' %};">{{ ques.title }}
+                                            <br>
+                                            <small style="color: gray">{{ ques.date_publish|date:'M  j号 Y年' }}</small>
+                                        </a>
+                                    </li>
+                                {% endfor %}
                             </ul>
                         </div>
-                        <div class="tab-pane" id="FOLLOW">
-                            {% for followee in followUsers %}
+                        <div class="tab-pane" id="FOLLOWING">
+                            {% for pro in profile.following_list %}
                                 <ul class="list-group">
                                     <li class="list-group-item">
                                         <div class="row">
@@ -126,18 +142,57 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <h4>{{ followee.nickname }}</h4>
+                                                    <h4><a href="/profile/?uid={{ pro.id }}">{{ pro.nickname }}</a></h4>
                                                 </div>
                                                 <div class="row">
-                                                    <p>{{ followee.self_description }}</p>
+                                                    <p style="color: gray">{{ pro.self_description }}</p>
                                                 </div>
-                                                <div class="row">
-                                                    <h5 style="color: gray;">15 回答 2文章 10121关注者</h5>
-                                                </div>
+                                                {#                                                <div class="row">#}
+                                                {#                                                    <h5 style="color: gray;">15 回答 2文章 10121关注者</h5>#}
+                                                {#                                                </div>#}
                                             </div>
                                             <div class="col-md-3">
-                                                <div class="row" style="margin-top: 30px;"></div>
-                                                <button type="button" class="btn btn-primary">取消关注</button>
+                                                <div class="row" style="margin-top: 15%;"></div>
+                                                {% if profile.user.id == client.id %}
+                                                    <button type="button" class="btn btn-primary">取消关注</button>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-primary">关注</button>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                    </li>
+                                </ul>
+                            {% endfor %}
+                        </div>
+
+                        <div class="tab-pane" id="FOLLOWED">
+                            {% for pro in profile.followed_list %}
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <img src="{% static "img/pic02.jpg" %}" width="100"
+                                                     class="img-responsive img-thumbnail"/>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <h4><a href="/profile/?uid={{ pro.id }}">{{ pro.nickname }}</a></h4>
+                                                </div>
+                                                <div class="row">
+                                                    <p style="color: gray">{{ pro.self_description }}</p>
+                                                </div>
+                                                {#                                                <div class="row">#}
+                                                {#                                                    <h5 style="color: gray;">15 回答 2文章 10121关注者</h5>#}
+                                                {#                                                </div>#}
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row" style="margin-top: 15%;"></div>
+                                                {% if profile.user.id == client.id %}
+                                                    <button type="button" class="btn btn-primary">取消关注</button>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-primary">关注</button>
+                                                {% endif %}
                                             </div>
                                         </div>
 
@@ -151,18 +206,60 @@
             <div class="col-md-4  ">
                 <div class="row well">
                     <div class="col-md-4 col-md-offset-2">
-                        <button type="button" class="btn btn-primary">关注了</button>
-                        <h4 class="text-center  ">213435</h4>
+                        <button id="IFocusWho" type="button" class="btn btn-primary" href="#FOLLOWING"
+                                data-toggle="tab">我关注了谁
+                        </button>
+                        <h4 class="text-center  ">{{ profile.following_count }}</h4>
                     </div>
                     <div class="col-md-4">
-                        <button type="button" class="btn btn-primary">关注者</button>
-                        <h4 class="text-center  ">653</h4>
+                        <button id="WhoFocusMe" type="button" class="btn btn-primary" href="#FOLLOWED"
+                                data-toggle="tab">谁关注我
+                        </button>
+                        <h4 class="text-center  ">{{ profile.followed_count }}</h4>
                     </div>
                 </div>
                 <div class="row well">
-                    <h4 class="text-center">联系我们 © 2017 知乎</h4>
+                    <h4 class="text-center text-primary">联系我们 © 2017 QandA</h4>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function () {
+            $('#IFocusWho').click(function () {
+                $('ul li').removeClass('active')
+                $('a[href="#FOLLOWING"]').parent().addClass('active')
+            });
+            $('#WhoFocusMe').click(function () {
+                $('ul li').removeClass('active')
+                $('a[href="#FOLLOWED"]').parent().addClass('active')
+            });
+
+
+            $('#submitChange').click(function () {
+                alert($(this).html())
+
+{#                $.ajax({#}
+{#                    url: '{% url 'article' %}',#}
+{#                    type: 'get',#}
+{#                    dataType: 'text',#}
+{#                    data: {#}
+{#                        'user_id': {{ client.id }},#}
+{#                        'comment_text': $(inputText).val(),#}
+{#                        'article_id': inputName#}
+{#                    },#}
+{#                    success: function (data) {#}
+{#                        if (data == 'ok') {#}
+{#                            var string = '<a class="list-group-item "><div class="row"><div class="col-md-2"><img src="{% static "img/pic02.jpg" %}" width="80" class="img-responsive img-thumbnail"/></div><div class="col-md-7"><h4>{{ client.username }}</h4><p style="color: gray;">{{ client.self_description }}</p></div><div class="col-md-3"><p>刚刚发表</p></div></div><div class="row"><div class="col-md-10 col-md-offset-1"><h4 id="list_group_item_text">' + $(inputText).val() + '</h4></div></div><div class="row"><div class="col-md-offset-1"><span class="glyphicon glyphicon-thumbs-up"><code>0</code>&nbsp;</span></div></div></a>'#}
+{#                            $(id_list_group).append(string)#}
+{#                        }#}
+{#                    },#}
+{#                    error: function () {#}
+{#                        alert('出现错误!');#}
+{#                    }#}
+{#                });#}
+            });
+        });
+
+    </script>
 {% endblock %}

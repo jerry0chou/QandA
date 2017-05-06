@@ -6,8 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from handle import getSequence, showPage, getMostReply, getArticleCommet, saveComment, sendMessage, getFollowId, \
-    getFollowUsers
+from handle import getSequence, showPage, getMostReply, getArticleCommet, saveComment, sendMessage, getFollowId, getProfile
 from home.models import User, Follow, Message, Question
 from home.verify import verify_username, verify_phone, verify_pwd
 
@@ -17,7 +16,7 @@ def global_setting(request):
 
     NewQues = Question.objects.all().order_by('-date_publish')[:3]
 
-    MostFocus = Question.objects.all().order_by('-focus_num')[:3]
+    MostLikes = Question.objects.all().order_by('-likes')[:3]
 
     question_list = Question.objects.annotate(count=Count('article')).values('count', 'title', 'id').order_by('-count')[
                     :3]
@@ -33,7 +32,7 @@ def global_setting(request):
 def index(request):
     num = request.GET.get('num')
 
-    Qlist = Question.objects.all().order_by('-focus_num')  # 查询
+    Qlist = Question.objects.all().order_by('-likes')  # 查询
     length = len(Qlist)
     result = getSequence(length, 2)  # 每两个为一页
     size = range(len(result))  # 这个是列表
@@ -144,8 +143,10 @@ def article(request):
 def profile(request):
     uid = request.GET.get('uid')
     if uid:
-        followUsers = getFollowUsers(fid=uid)
+        # followUsers = getFollowUsers(fid=uid)
+        profile=getProfile(uid)
         return render(request, 'profile.html', locals())
+
 
 @csrf_exempt
 def inbox(request):

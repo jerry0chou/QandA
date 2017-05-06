@@ -13,16 +13,18 @@
                                     {% for t in ques_article.tags %}
                                         <td>
                                             <h4><span
-                                                    class="label {% cycle 'label-info'  'label-warning' 'label-primary'  'label-success' 'label-danger' %}">{{ t }}</span>
-                                            </h4></td>
-                                        <td>
+                                                    class="label {% cycle 'label-info'  'label-warning' 'label-primary'  'label-success' 'label-danger' %}">{{ t }}
+                                            </span>
+                                            </h4>
+                                        </td>
                                     {% endfor %}
                                 </tr>
                             </table>
                         </div>
                     </div>
                     <div class="row">
-                        <h3>{{ ques_article.queston_title }}</h3>
+                        <h3>{{ ques_article.queston_title }}
+                        </h3>
                     </div>
                     <div class="row">
                         <p style="color: gray;">
@@ -33,14 +35,14 @@
                 <div class="col-md-4 col-md-offset-1">
                     <div class="row " style="color: #2aabd2">
                         <div class="text-center">
-                            <h4>关注者</h4>
-                            <h3>154512345481212</h3>
+                            <h4><span class="glyphicon glyphicon-user"></span>&nbsp;{{ ques_article.queston_author.nickname }}</h4>
+                            <h4><span class="glyphicon glyphicon-heart"></span>&nbsp;{{ ques_article.likes }}</h4>
                         </div>
                     </div>
 
                     <div class="row text-center">
-                        <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus">关注</span>
-                        </button>
+{#                        <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus">关注</span>#}
+{#                        </button>#}
                         <button type="button" class="btn btn-primary" data-toggle="modal"
                                 data-target="#WriteAnswer"><span
                                 class="glyphicon glyphicon-pencil">写回答</span></button>
@@ -161,11 +163,11 @@
                     success: function (data) {
                         if (data == 'canceled') {
                             focusObject.html('关注');
-                            focusObject.attr('id','ok')
+                            focusObject.attr('id', 'ok')
                         }
                         else if (data == 'focused') {
                             focusObject.html("取消关注");
-                            focusObject.attr('id','cancel')
+                            focusObject.attr('id', 'cancel')
                         }
                     },
                     error: function () {
