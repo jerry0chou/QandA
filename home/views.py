@@ -142,10 +142,21 @@ def article(request):
 @csrf_exempt
 def profile(request):
     uid = request.GET.get('uid')
+    sex=request.GET.get('sex')
+    self_description=request.GET.get('self_description')
+    mobile=request.GET.get('mobile')
+    oldPwd=request.GET.get('oldPwd')
+    newPwd=request.GET.get('newPwd')
+    print sex, self_description, mobile, oldPwd, newPwd
     if uid:
         # followUsers = getFollowUsers(fid=uid)
         profile=getProfile(uid)
         return render(request, 'profile.html', locals())
+    elif sex and self_description and mobile and oldPwd and newPwd:
+        print sex, self_description, mobile, oldPwd, newPwd
+        return HttpResponse('ok')
+    else:
+        return HttpResponse('error')
 
 
 @csrf_exempt

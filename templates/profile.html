@@ -46,13 +46,13 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="col-sm-10">
-                                                <textarea class="form-control" rows="1"
+                                                <textarea id="self_description" class="form-control" rows="1"
                                                           placeholder="个性签名">{{ profile.user.self_description }}</textarea>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" placeholder="手机号"
+                                                <input id="mobile" type="text" class="form-control" placeholder="手机号"
                                                        value="{{ profile.user.mobile }}"/>
                                             </div>
 
@@ -62,20 +62,22 @@
                                         <div style="margin-top: 28%"></div>
                                         <div class="form-group">
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" placeholder="旧密码"/>
+                                                <input id="oldPwd" type="password" class="form-control" placeholder="旧密码"/>
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" placeholder="新密码"/>
+                                                <input id="newPwd" type="password"  class="form-control" placeholder="新密码"/>
                                             </div>
                                         </div>
 
                                     </div>
+                                    {% if profile.user.id == client.id %}
                                     <div class="col-md-2 column ">
                                         <div style="margin-top: 100%"></div>
-                                        <button  class="btn btn-primary">提交修改</button>
+                                        <button class="btn btn-primary" type="button" id="submitChange"   >提交修改</button>
                                     </div>
+                                    {% endif %}
                                 </form>
                             </div>
 
@@ -153,7 +155,7 @@
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="row" style="margin-top: 15%;"></div>
-                                                {% if profile.user.id == client.id %}
+                                                {% if pro.id in followId_list %}
                                                     <button type="button" class="btn btn-primary">取消关注</button>
                                                 {% else %}
                                                     <button type="button" class="btn btn-primary">关注</button>
@@ -188,9 +190,9 @@
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="row" style="margin-top: 15%;"></div>
-                                                {% if profile.user.id == client.id %}
+                                                {% if pro.id in followId_list %}
                                                     <button type="button" class="btn btn-primary">取消关注</button>
-                                                {% else %}
+                                                {% elif pro.id != client.id %}
                                                     <button type="button" class="btn btn-primary">关注</button>
                                                 {% endif %}
                                             </div>
@@ -237,27 +239,27 @@
 
 
             $('#submitChange').click(function () {
-                alert($(this).html())
+                alert($('#self_description').val())
 
-{#                $.ajax({#}
-{#                    url: '{% url 'article' %}',#}
-{#                    type: 'get',#}
-{#                    dataType: 'text',#}
-{#                    data: {#}
-{#                        'user_id': {{ client.id }},#}
-{#                        'comment_text': $(inputText).val(),#}
-{#                        'article_id': inputName#}
-{#                    },#}
-{#                    success: function (data) {#}
-{#                        if (data == 'ok') {#}
-{#                            var string = '<a class="list-group-item "><div class="row"><div class="col-md-2"><img src="{% static "img/pic02.jpg" %}" width="80" class="img-responsive img-thumbnail"/></div><div class="col-md-7"><h4>{{ client.username }}</h4><p style="color: gray;">{{ client.self_description }}</p></div><div class="col-md-3"><p>刚刚发表</p></div></div><div class="row"><div class="col-md-10 col-md-offset-1"><h4 id="list_group_item_text">' + $(inputText).val() + '</h4></div></div><div class="row"><div class="col-md-offset-1"><span class="glyphicon glyphicon-thumbs-up"><code>0</code>&nbsp;</span></div></div></a>'#}
-{#                            $(id_list_group).append(string)#}
-{#                        }#}
-{#                    },#}
-{#                    error: function () {#}
-{#                        alert('出现错误!');#}
-{#                    }#}
-{#                });#}
+                $.ajax({
+                    url: '{% url 'profile' %}',
+                    type: 'get',
+                    dataType: 'text',
+                    data: {
+                        'user_id': {{ client.id }},
+                        'self_description': $('#self_description').val(),
+                        'mobile': $('#mobile').val(),
+                        'oldPwd':$('#oldPwd').val(),
+                        'newPwd':$('#newPwd').val(),
+                        'sex':$('input[type="radio"]:checked').val()
+                    },
+                    success: function (data) {
+                        alert(data)
+                    },
+                    error: function () {
+                        alert('出现错误!');
+                    }
+                });
             });
         });
 

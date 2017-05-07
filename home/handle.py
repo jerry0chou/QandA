@@ -170,7 +170,6 @@ def sendMessage(from_id, to_id, content):
     message.save()
 
 
-
 class Profile:
     def __init__(self):
         self.user=None
