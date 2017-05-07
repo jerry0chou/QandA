@@ -3,50 +3,49 @@
 
 {% block main_content %}
 
-    <div class="col-md-8 col-md-offset-2 ">
-        <div class="row ">
-            <div class="col-md-2">
-                <p><b>最近联系</b></p>
-            </div>
-        </div >
-        {% for message in message_list %}
-            <div class="row well">
-                <div class="col-md-1">
-                    <img src="{% static "img/zhi.jpg" %}" width="100" class="img-responsive img-thumbnail"/>
-                </div>
-                <div class="col-md-11">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <a class="text-primary">知乎书店团队:<span class="glyphicon glyphicon-certificate"></span></a>
-                        </div>
-                        <div class="col-md-5">
-                            {% if client.nickname %}
-                                <p>亲爱的 {{ client.nickname }}，你好，</p>
-                            {% else %}
-                                <p>亲爱的 {{ client.username }}，你好，</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <p style="font-size: medium">
-                            {{ message.content }}
-                        </p>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <p style="color: gray">
-                                {#                            2月20日 12:26#}
-                                {{ message.date_publish|date:'M  j日  G:i' }}
-                            </p>
-                        </div>
-                        <div class="col-md-3 col-md-offset-6 text-center">
-                            <button type="button" class="btn btn-primary">回复</button>
-                            <button type="button" class="btn btn-danger">删除</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
+<div class="col-md-8 col-md-offset-2 ">
+    <div class="row ">
+        <div class="col-md-2">
+            <h4><b>最近联系</b></h4>
+        </div>
     </div>
+    {% for message in message_list %}
+    <div class="row well">
+        <div class="col-md-2">
+            <img src="{% static 'img/pic02.jpg' %}" width="100" class="img-responsive img-thumbnail"/>
+        </div>
+        <div class="col-md-10">
+            <div class="row">
+                {% if message.from_user_id == client.id%}
+                <h4>
+                    你&nbsp;&nbsp;&nbsp;回复:&nbsp;&nbsp;&nbsp;{{message.to_user.nickname}}
+                </h4>
+                {% elif message.to_user_id == client.id %}
+                <h4>
+                    {{message.from_user.nickname}}&nbsp;&nbsp;&nbsp;回复:&nbsp;&nbsp;&nbsp;你
+                </h4>
+                {% endif %}
+            </div>
+            <div class="row">
+                <p style="font-size: medium">
+                    {{ message.content }}
+                </p>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <p style="color: gray">
+                        {# 2月20日 12:26#}
+                        {{ message.date_publish|date:'M j日 G:i' }}
+                    </p>
+                </div>
+                <div class="col-md-3 col-md-offset-6 text-center">
+                    <button type="button" class="btn btn-primary">回复</button>
+                    <button type="button" class="btn btn-danger">删除</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 
 {% endblock %}

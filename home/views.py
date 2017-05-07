@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from handle import getSequence, showPage, getMostReply, getArticleCommet, saveComment, sendMessage, getFollowId, getProfile
 from home.models import User, Follow, Message, Question
 from home.verify import verify_username, verify_phone, verify_pwd
-
+from django.db.models import Q
 
 def global_setting(request):
     client = request.session.get('client', default=None)
@@ -163,5 +163,5 @@ def profile(request):
 def inbox(request):
     client = request.session.get('client', default=None)
     if client:
-        message_list = Message.objects.filter(from_user_id=client.id)
+        message_list = Message.objects.filter(Q(from_user=client.id) | Q(to_user=client.id)).order_by('-date_publish')
     return render(request, 'inbox.html', locals())
