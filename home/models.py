@@ -55,7 +55,6 @@ class Message(models.Model):
     class Meta:
         verbose_name = '私信'
         verbose_name_plural = verbose_name
-        unique_together = (("from_user", "to_user"),)
 
     def __unicode__(self):
         return str(self.id)

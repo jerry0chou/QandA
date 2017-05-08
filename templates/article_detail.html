@@ -68,7 +68,7 @@
                             <div class="alert">
                             <div class="row">
                                 <div class="col-md-2">
-                                    <img src="{% static "img/pic02.jpg" %}" width="300"
+                                    <img src="{% static 'img/pic02.jpg' %}" width="300"
                                          class="img-responsive img-thumbnail"/>
                                 </div>
                                 <div class="col-md-7">
@@ -196,7 +196,7 @@
                     },
                     success: function (data) {
                         if (data == 'ok') {
-                            var string = '<a class="list-group-item "><div class="row"><div class="col-md-2"><img src="{% static "img/pic02.jpg" %}" width="80" class="img-responsive img-thumbnail"/></div><div class="col-md-7"><h4>{{ client.username }}</h4><p style="color: gray;">{{ client.self_description }}</p></div><div class="col-md-3"><p>刚刚发表</p></div></div><div class="row"><div class="col-md-10 col-md-offset-1"><h4 id="list_group_item_text">' + $(inputText).val() + '</h4></div></div><div class="row"><div class="col-md-offset-1"><span class="glyphicon glyphicon-thumbs-up"><code>0</code>&nbsp;</span></div></div></a>'
+                            var string = '<a class="list-group-item "><div class="row"><div class="col-md-2"><img src="{% static "img/pic02.jpg" %}" width="80" class="img-responsive img-thumbnail"/></div><div class="col-md-7"><h4>{{ client.nickname }}</h4><p style="color: gray;">{{ client.self_description }}</p></div><div class="col-md-3"><p>刚刚发表</p></div></div><div class="row"><div class="col-md-10 col-md-offset-1"><h4 id="list_group_item_text">' + $(inputText).val() + '</h4></div></div><div class="row"><div class="col-md-offset-1"><span class="glyphicon glyphicon-thumbs-up"><code>0</code>&nbsp;</span></div></div></a>'
                             $(id_list_group).append(string)
                         }
                     },

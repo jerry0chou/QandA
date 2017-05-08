@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-from models import *
+from models import Message, Question, Follow, Comment, User, Article
+
 from django.db.models import Max, Count
 import datetime
-
+import re
 
 class Elem():
     def __init__(self):

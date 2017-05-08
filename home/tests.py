@@ -7,10 +7,11 @@ from django.db.models import Q
 # Create your tests here.
 
 import datetime
-
+import re
 
 class TestCase(TestCase):
-    u = User.objects.get(id=2)
-    message = Message.objects.filter(Q(from_user=u) | Q(to_user=u)).order_by('-date_publish')
-    # for m in message:
-    #     print unicode(m.from_user.nickname),unicode(m.to_user.nickname),unicode(m.content[:5]),m.date_publish
+    user=User.objects.get(id=2)
+    user.sex='女'
+    user.email='1052757325@qq.com'
+    user.password='456789'
+    user.save()

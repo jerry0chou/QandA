@@ -2,50 +2,104 @@
 {% load staticfiles %}
 
 {% block main_content %}
-
-<div class="col-md-8 col-md-offset-2 ">
-    <div class="row ">
+    <div class="col-md-8 col-md-offset-2 ">
         <div class="col-md-2">
             <h4><b>最近联系</b></h4>
         </div>
     </div>
-    {% for message in message_list %}
-    <div class="row well">
-        <div class="col-md-2">
-            <img src="{% static 'img/pic02.jpg' %}" width="100" class="img-responsive img-thumbnail"/>
-        </div>
-        <div class="col-md-10">
-            <div class="row">
-                {% if message.from_user_id == client.id%}
-                <h4>
-                    你&nbsp;&nbsp;&nbsp;回复:&nbsp;&nbsp;&nbsp;{{message.to_user.nickname}}
-                </h4>
-                {% elif message.to_user_id == client.id %}
-                <h4>
-                    {{message.from_user.nickname}}&nbsp;&nbsp;&nbsp;回复:&nbsp;&nbsp;&nbsp;你
-                </h4>
-                {% endif %}
-            </div>
-            <div class="row">
-                <p style="font-size: medium">
-                    {{ message.content }}
-                </p>
-            </div>
-            <div class="row">
-                <div class="col-md-3">
-                    <p style="color: gray">
-                        {# 2月20日 12:26#}
-                        {{ message.date_publish|date:'M j日 G:i' }}
-                    </p>
-                </div>
-                <div class="col-md-3 col-md-offset-6 text-center">
-                    <button type="button" class="btn btn-primary">回复</button>
-                    <button type="button" class="btn btn-danger">删除</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-</div>
+    <div class="col-md-8 col-md-offset-2 " id="inboxBody">
 
+        {% for message in message_list %}
+            <div class="row
+        {% if message.from_user_id == client.id %}
+               alert alert-info
+        {% elif message.to_user_id == client.id %}
+               alert alert-success
+        {% endif %}
+      ">
+                <div class="col-md-2 alert">
+                    <img src="{% static 'img/pic02.jpg' %}" width="100" class="img-responsive img-thumbnail"/>
+                </div>
+                <div class="col-md-10">
+                    <div class="row">
+                        {% if message.from_user_id == client.id %}
+                            <h4>
+                                你&nbsp;&nbsp;&nbsp;回复:&nbsp;&nbsp;&nbsp;{{ message.to_user.nickname }}
+                            </h4>
+                        {% elif message.to_user_id == client.id %}
+                            <h4>
+                                {{ message.from_user.nickname }}&nbsp;&nbsp;&nbsp;回复:&nbsp;&nbsp;&nbsp;你
+                            </h4>
+                        {% endif %}
+                    </div>
+                    <div class="row">
+                        <p style="font-size: medium">
+                            {{ message.content }}
+                        </p>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <p style="color: gray">
+                                {# 2月20日 12:26#}
+                                {{ message.date_publish|date:'M j日 G:i' }}
+                            </p>
+                        </div>
+                        <div class="col-md-3 col-md-offset-6 text-center">
+                            <button name="reply" type="button" class="btn btn-primary" data-toggle="modal"
+
+                                    {% if message.from_user_id == client.id %}
+                                    userId="{{ message.to_user_id }}" who="{{ message.to_user.nickname }}"
+                                    {% elif message.to_user_id == client.id %}
+                                    userId="{{ message.from_user_id }}" who="{{ message.from_user.nickname }}"
+                                    {% endif %}
+                                    clientId="{{ client.id }}"
+                            >回复
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+    {% include 'leave_message.html' %}
+    <script>
+        $(document).ready(function () {
+            var to_user_id;
+            var from_user_id;
+            var who;
+            $('button[name="reply"]').click(function () {
+                to_user_id = $(this).attr('userId');
+                 who = $(this).attr('who');
+                from_user_id = $(this).attr('clientId');
+                $('#messsage_to').html('回复给: ' + who);
+                $('#leave_message').modal();
+            });
+            $('#sendTo').click(function () {
+                $.ajax({
+                    url: '{% url 'inbox' %}',
+                    type: 'get',
+                    dataType: 'text',
+                    data: {
+                        'from_id': from_user_id,
+                        'm_text': $('#message_text').val(),
+                        'to_id': to_user_id
+                    },
+                    success: function (responseText) {
+
+                        if (responseText == 'ok') {
+                            var string = '<div class="row alert alert-danger"><div class="col-md-2 alert"> <img src="{% static 'img/pic02.jpg' %}" width="100" class="img-responsive img-thumbnail"/></div><div class="col-md-10"><div class="row"><h4> 我 回复:  '+who+'</h4></div><div class="row"><p style="font-size: medium"> '+$('#message_text').val()+'</p></div><div class="row"> <div class="col-md-3"> <p style="color: gray">刚刚 </p></div><div class="col-md-3 col-md-offset-6 text-center">  <button name="reply" type="button" class="btn btn-primary" data-toggle="modal"  >已回复</button></div> </div> </div></div>'
+                            $('#inboxBody').prepend(string)
+                            $('#leave_message').modal('hide')
+                        }
+                    },
+                    error: function () {
+                        alert('出现错误!');
+                    }
+                });
+            });
+        });
+
+
+    </script>
 {% endblock %}

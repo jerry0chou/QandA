@@ -6,10 +6,12 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from handle import getSequence, showPage, getMostReply, getArticleCommet, saveComment, sendMessage, getFollowId, getProfile
+from handle import getSequence, showPage, getMostReply, getArticleCommet, saveComment, sendMessage, getFollowId, \
+    getProfile
 from home.models import User, Follow, Message, Question
-from home.verify import verify_username, verify_phone, verify_pwd
+from home.verify import verify_username, verify_phone, verify_pwd, verify_pwd2, verify_email
 from django.db.models import Q
+
 
 def global_setting(request):
     client = request.session.get('client', default=None)
@@ -139,29 +141,57 @@ def article(request):
         sendMessage(from_id=from_user_id, to_id=to_user_id, content=message_text)
         return HttpResponse('ok')
 
+
 @csrf_exempt
 def profile(request):
     uid = request.GET.get('uid')
-    sex=request.GET.get('sex')
-    self_description=request.GET.get('self_description')
-    mobile=request.GET.get('mobile')
-    oldPwd=request.GET.get('oldPwd')
-    newPwd=request.GET.get('newPwd')
-    print sex, self_description, mobile, oldPwd, newPwd
+    sex = request.GET.get('sex')
+    self_description = request.GET.get('self_description')
+    mobile = request.GET.get('mobile')
+    email = request.GET.get('email')
+    oldPwd = request.GET.get('oldPwd')
+    newPwd = request.GET.get('newPwd')
+    # print sex, self_description, mobile, oldPwd, newPwd
+
+    client = request.session.get('client', default=None)
+
     if uid:
-        # followUsers = getFollowUsers(fid=uid)
-        profile=getProfile(uid)
+        profile = getProfile(uid)
         return render(request, 'profile.html', locals())
-    elif sex and self_description and mobile and oldPwd and newPwd:
-        print sex, self_description, mobile, oldPwd, newPwd
-        return HttpResponse('ok')
-    else:
-        return HttpResponse('error')
+    elif sex and self_description and mobile and email and oldPwd and newPwd:
+        print sex, self_description,email, mobile, oldPwd, newPwd
+        phone_list = verify_phone(mobile)
+
+        user = User.objects.get(id=client.id)
+
+        print '------',unicode(phone_list['phone']),user.password,verify_email(email),verify_pwd2(newPwd)
+        if phone_list['phone'] == '' and user.password == oldPwd and verify_email(email) == 'ok' and verify_pwd2(
+                newPwd) =='ok':
+            print user.username,'testests'
+            # user.sex=sex
+            # user.self_description=self_description
+            # user.mobile=mobile
+            # user.email=email
+            # user.password=newPwd
+            # user.save()
+            return HttpResponse('ok')
+        else:
+            return HttpResponse('error')
 
 
 @csrf_exempt
 def inbox(request):
     client = request.session.get('client', default=None)
-    if client:
+
+    from_id = request.GET.get('from_id')
+    to_id = request.GET.get('to_id')
+    m_text = request.GET.get('m_text')
+    print type(from_id), type(m_text)
+    if from_id and to_id and m_text:
+        print from_id, to_id, m_text, 'inside'
+        sendMessage(from_id=from_id, to_id=to_id, content=m_text)
+        return HttpResponse('ok')
+
+    elif client:
         message_list = Message.objects.filter(Q(from_user=client.id) | Q(to_user=client.id)).order_by('-date_publish')
-    return render(request, 'inbox.html', locals())
+        return render(request, 'inbox.html', locals())

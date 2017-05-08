@@ -38,3 +38,18 @@ def verify_pwd(pwd, pwd2):
         string = string + '两个密码不一致'
     pwd_dic['pwd'] = string
     return pwd_dic
+
+
+def verify_email(email):
+    str = r'^[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+){0,4}$'
+    if re.match(str, email):
+        return 'ok'
+    else:
+        return 'error'
+
+
+def verify_pwd2(pwd):
+    if len(pwd) < 6:
+        return 'error'
+    else:
+        return 'ok'
