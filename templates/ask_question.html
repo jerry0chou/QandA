@@ -8,24 +8,55 @@
                 <h4 class="modal-title" id="myModalLabel">提问</h4>
             </div>
             <div class="modal-body">
+
                 <form>
                     <div class="form-group">
-                        <label for="recipient-name" class="control-label">内容:</label>
-                        <input type="text" class="form-control" id="recipient-name">
+                        <label for="recipient-name" class="control-label">问题名:</label>
+                        <input type="text" class="form-control" id="question_name">
                     </div>
                     <div class="form-group">
-                        <label for="message-text" class="control-label">添加分类:</label>
-                        <input type="text" class="form-control" id="message-text"/>
+                        <label for="recipient-name" class="control-label">问题描述:</label>
+                        <textarea class="form-control" rows="5" placeholder="请简洁的描述问题" id="question_description"></textarea>
                     </div>
-                    <span class="label label-danger">科学</span>
-                    <span class="label label-info">教育</span>
-                    <span class="label label-primary">人性</span>
+                    <div class="form-group">
+                        <label for="message-text" class="control-label">添加标签:</label>
+                        <input type="text" class="form-control" id="question_tag" placeholder="标签之间按 空格 分离" />
+                    </div>
+
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="question_submit">确认添加</button>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('#question_submit').click(function () {
+            //alert($('#question_name').val()+$('#question_description').val()+$('#question_tag').val())
+            $.ajax({
+                url: '{% url "ask" %}',
+                type: 'post', 
+                dataType: 'text',
+                data: {
+                    'question_name': $('#question_name').val(),
+                    'question_description': $('#question_description').val(),
+                    'question_tag': $('#question_tag').val(),
+                },
+                success: function (reponseText) {
+                    if (reponseText == 'ok') {
+                        alert('ok')
+                    }
+                },
+
+                error: function () {
+                    alert('出现错误!')
+                }
+            });
+        });
+    });
+
+</script>

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from models import Message, Question, Follow, Comment, User, Article
+from models import Message, Question, Follow, Comment, User, Article,Tag
 
 from django.db.models import Max, Count
 import datetime
@@ -206,5 +206,19 @@ def getProfile(uid):
         foed_list.append(user)
     pro.followed_list = foed_list
     pro.followed_count = len(foed_list)
-
     return pro
+
+def askQuestion(uid,title,desc,tags):
+    ques,created = Question.objects.get_or_create(title=title)
+    ques.title = title
+    ques.desc = desc
+    ques.likes = 0
+    ques.date_publish = datetime.datetime.now()
+    u = User.objects.get(id=uid)
+    ques.author = u
+    ques.save()
+
+    for tag in tags:
+        if tag :
+            t,created=Tag.objects.get_or_create(name=tag)
+            ques.tag.add(t)

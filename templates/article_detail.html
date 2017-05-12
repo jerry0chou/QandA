@@ -1,252 +1,236 @@
-{% extends 'headbar.html' %}
-{% load staticfiles %}
-{% block main_content %}
-    {% include 'leave_message.html' %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 well">
-                <div class="col-md-6 col-md-offset-1">
-                    <div class="row">
-                        <div class="table-responsive">
-                            <table class="table-condensed">
-                                <tr>
-                                    {% for t in ques_article.tags %}
-                                        <td>
-                                            <h4><span
-                                                    class="label {% cycle 'label-info'  'label-warning' 'label-primary'  'label-success' 'label-danger' %}">{{ t }}
+{% extends 'headbar.html' %} {% load staticfiles %} {% block main_content %} {% include 'leave_message.html' %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 well">
+            <div class="col-md-6 col-md-offset-1">
+                <div class="row">
+                    <div class="table-responsive">
+                        <table class="table-condensed">
+                            <tr>
+                                {% for t in ques_article.tags %}
+                                <td>
+                                    <h4><span class="label {% cycle 'label-info'  'label-warning' 'label-primary'  'label-success' 'label-danger' %}">{{ t }}
                                             </span>
-                                            </h4>
-                                        </td>
-                                    {% endfor %}
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <h3>{{ ques_article.queston_title }}
-                        </h3>
-                    </div>
-                    <div class="row">
-                        <p style="color: gray;">
-                            {{ ques_article.queston_decs }}
-                        </p>
+                                    </h4>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                        </table>
                     </div>
                 </div>
-                <div class="col-md-4 col-md-offset-1">
-                    <div class="row " style="color: #2aabd2">
-                        <div class="text-center">
-                            <h4><span class="glyphicon glyphicon-user"></span>&nbsp;{{ ques_article.queston_author.nickname }}</h4>
-                            <h4><span class="glyphicon glyphicon-heart"></span>&nbsp;{{ ques_article.likes }}</h4>
+                <div class="row">
+                    <h3>{{ ques_article.queston_title }}
+                    </h3>
+                </div>
+                <div class="row">
+                    <p style="color: gray;">
+                        {{ ques_article.queston_decs }}
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 col-md-offset-1">
+                <div class="row " style="color: #2aabd2">
+                    <div class="text-center">
+                        <h4><span class="glyphicon glyphicon-user"></span>&nbsp;{{ ques_article.queston_author.nickname }}</h4>
+                        <h4><span class="glyphicon glyphicon-heart"></span>&nbsp;{{ ques_article.likes }}</h4>
+                    </div>
+                </div>
+
+                <div class="row text-center">
+                    {# <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus">关注</span>#}
+{#                        </button>#}
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#WriteAnswer"><span
+                                class="glyphicon glyphicon-pencil">写回答</span></button>
+                </div>
+            </div>
+            {% include 'write_answer.html' %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 well">
+            <div class="row">
+                <div class="list-group">
+                    <a href="#" class="list-group-item ">
+                        <h4 class="text-center"><span class="glyphicon glyphicon-pencil">{{ ques_article.article_count }}个回答</span>
+                        </h4>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                {%if ques_article.article_count == 0 %}
+                <div class="text-center">
+                      <a href="/answer/?qid={{ques_article.qid}}" class="btn btn-primary"><span class="glyphicon glyphicon-pencil">我要回答</span></a>  
+                </div>
+                {%endif%}
+            </div>
+            <div class="row">
+                {% for article in ques_article.articles %} {% with i=forloop.counter %}
+                <div class="alert">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <img src="{% static 'img/pic02.jpg' %}" width="300" class="img-responsive img-thumbnail" />
+                        </div>
+                        <div class="col-md-7">
+                            {% if article.user.nickname %}
+                            <h4>{{ article.user.nickname }}</h4>
+                            {% else %}
+                            <h4>{{ article.user.username }}</h4>
+                            {% endif %}
+                            <p style="color: gray">{{ article.user.self_description }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            {% if article.user.id in followId_list %}
+                            <button name="focus" id="cancel" type="button" class="btn btn-primary" value="{{ article.user.id }}">
+                                            取消关注
+                                        </button> {% else %}
+                            <button name="focus" id="ok" type="button" class="btn btn-primary" value="{{ article.user.id }}">
+                                            关注
+                                        </button> {% endif %}
+                            <button name="message" type="button" class="btn btn-primary" data-toggle="modal" {# data-target="#leave_message" #} userId="{{ article.user.id }}"
+                                who="{{ article.user.nickname }}">私信
+                                    </button>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="content">
+                            {% autoescape off %} {{ article.content }} {% endautoescape %}
                         </div>
                     </div>
 
-                    <div class="row text-center">
-{#                        <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus">关注</span>#}
-{#                        </button>#}
-                        <button type="button" class="btn btn-primary" data-toggle="modal"
-                                data-target="#WriteAnswer"><span
-                                class="glyphicon glyphicon-pencil">写回答</span></button>
-                    </div>
+                    <hr/>
+                    <h4>
+                        <a data-toggle="collapse" href="#collapseComment{{ i }}"><span
+                                        class="glyphicon glyphicon-comment"><code>{{ article.comments_length }}</code>&nbsp;</span>
+                                </a>
+                        <span class="glyphicon glyphicon-thumbs-up"><code>{{ article.thumbsup }}</code>&nbsp;</span>
+                        <span class="glyphicon glyphicon-calendar"><code>{{ article.date_publish|date:'M  j号 Y年' }}</code>&nbsp;</span>
+                    </h4>
+                    {% include 'comment.html' %} {% endwith %} {% endfor %}
+
                 </div>
-                {% include 'write_answer.html' %}
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8 well">
+
+            <div class="col-md-4 well">
                 <div class="row">
                     <div class="list-group">
-                        <a href="#" class="list-group-item ">
-                            <h4 class="text-center"><span
-                                    class="glyphicon glyphicon-pencil">{{ ques_article.article_count }}个回答</span>
+                        <a class="list-group-item ">
+                            <h4 class="text-center"><span class="glyphicon glyphicon-list-alt">相关问题</span>
                             </h4>
                         </a>
                     </div>
-                </div>
-                <div class="row">
-                    {% for article in ques_article.articles %}
-                        {% with i=forloop.counter %}
-                            <div class="alert">
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <img src="{% static 'img/pic02.jpg' %}" width="300"
-                                         class="img-responsive img-thumbnail"/>
-                                </div>
-                                <div class="col-md-7">
-                                    {% if article.user.nickname %}
-                                        <h4>{{ article.user.nickname }}</h4>
-                                    {% else %}
-                                        <h4>{{ article.user.username }}</h4>
-                                    {% endif %}
-                                    <p style="color: gray">{{ article.user.self_description }}</p>
-                                </div>
-                                <div class="col-md-3">
-                                    {% if article.user.id in followId_list %}
-                                        <button name="focus" id="cancel" type="button"
-                                                class="btn btn-primary" value="{{ article.user.id }}">
-                                            取消关注
-                                        </button>
-                                    {% else %}
-                                        <button name="focus" id="ok" type="button"
-                                                class="btn btn-primary" value="{{ article.user.id }}">
-                                            关注
-                                        </button>
-                                    {% endif %}
-
-                                    {#                                    <button type="button" class="btn btn-primary navbar-btn" data-toggle="modal"#}
-                                    {#                                            data-target="#myModal">提问#}
-                                    {#                                    </button>#}
-                                    <button name="message" type="button" class="btn btn-primary" data-toggle="modal"
-                                            {#                                            data-target="#leave_message"#}
-                                            userId="{{ article.user.id }}" who="{{ article.user.nickname }}">私信
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="content">
-                                    {% autoescape off %}
-                                        {{ article.content }}
-                                    {% endautoescape %}
-                                </div>
-                            </div>
-
-                            <hr/>
-                            <h4>
-                                <a data-toggle="collapse" href="#collapseComment{{ i }}"><span
-                                        class="glyphicon glyphicon-comment"><code>{{ article.comments_length }}</code>&nbsp;</span>
-                                </a>
-                                <span class="glyphicon glyphicon-thumbs-up"><code>{{ article.thumbsup }}</code>&nbsp;</span>
-                                <span class="glyphicon glyphicon-calendar"><code>{{ article.date_publish|date:'M  j号 Y年' }}</code>&nbsp;</span>
-                            </h4>
-                            {% include 'comment.html' %}
-                        {% endwith %}
-                    {% endfor %}
-
-                    <div class="text-center">
-                        {% include 'pagination.html' %}
-                    </div>
-                    </div>
-                </div>
-                <div class="col-md-4 well">
-                    <div class="row">
-                        <div class="list-group">
-                            <a class="list-group-item ">
-                                <h4 class="text-center"><span
-                                        class="glyphicon glyphicon-list-alt">相关问题</span>
-                                </h4>
-                            </a>
-                        </div>
-                        <div class="list-group">
-                            <a href="#" class="list-group-item ">你见过最美好的男生是什么样的?<span class="badge">1565</span></a>
-                            <a href="#" class="list-group-item">女生是怎么看待腹肌男的？<span class="badge">1187</span></a>
-                            <a href="#" class="list-group-item">女生由丑变美后是什么样的感觉？<span class="badge">1235</span></a>
-                            <a href="#" class="list-group-item">什么是爱？爱一个人是什么感觉？<span class="badge">10290</span></a>
-                        </div>
+                    <div class="list-group">
+                        <a href="#" class="list-group-item ">你见过最美好的男生是什么样的?<span class="badge">1565</span></a>
+                        <a href="#" class="list-group-item">女生是怎么看待腹肌男的？<span class="badge">1187</span></a>
+                        <a href="#" class="list-group-item">女生由丑变美后是什么样的感觉？<span class="badge">1235</span></a>
+                        <a href="#" class="list-group-item">什么是爱？爱一个人是什么感觉？<span class="badge">10290</span></a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        $(document).ready(function () {
-            $('button[name="focus"]').click(function () {
-                var focusObject = $(this);
-                $.ajax({
-                    url: '{% url 'article' %}',
-                    type: 'get',
-                    dataType: 'text',
-                    data: {
-                        'follower_id': {{ client.id }},
-                        'followee_id': focusObject.val(),
-                        'follow_tip': focusObject.attr('id')
+<script>
+    $(document).ready(function () {
+        $('button[name="focus"]').click(function () {
+            var focusObject = $(this);
+            $.ajax({
+                url: '{% url 'article' %}',
+                type: 'get',
+                dataType: 'text',
+                data: {
+                    'follower_id': {{ client.id }},
+            'followee_id': focusObject.val(),
+            'follow_tip': focusObject.attr('id')
                     },
-                    success: function (data) {
-                        if (data == 'canceled') {
-                            focusObject.html('关注');
-                            focusObject.attr('id', 'ok')
-                        }
-                        else if (data == 'focused') {
-                            focusObject.html("取消关注");
-                            focusObject.attr('id', 'cancel')
-                        }
-                    },
-                    error: function () {
-                        alert('出现错误!');
-                    }
+        success: function (data) {
+            if (data == 'canceled') {
+                focusObject.html('关注');
+                focusObject.attr('id', 'ok')
+            }
+            else if (data == 'focused') {
+                focusObject.html("取消关注");
+                focusObject.attr('id', 'cancel')
+            }
+        },
+        error: function () {
+            alert('出现错误!');
+        }
                 });
             });
         });
 
-        $(document).ready(function () {
-            $('button[name="submitComment"]').click(function () {
-                var buttonObj = $(this);
-                var value = buttonObj.val()
-                var inputText = '#' + value
-                var inputName = $(inputText).attr('name')
-                var id_list_group = '#list_group' + inputName
-                //alert(id_list_group);
-                $.ajax({
-                    url: '{% url 'article' %}',
-                    type: 'get',
-                    dataType: 'text',
-                    data: {
-                        'user_id': {{ client.id }},
-                        'comment_text': $(inputText).val(),
-                        'article_id': inputName
+    $(document).ready(function () {
+        $('button[name="submitComment"]').click(function () {
+            var buttonObj = $(this);
+            var value = buttonObj.val()
+            var inputText = '#' + value
+            var inputName = $(inputText).attr('name')
+            var id_list_group = '#list_group' + inputName
+            //alert(id_list_group);
+            $.ajax({
+                url: '{% url 'article' %}',
+                type: 'get',
+                dataType: 'text',
+                data: {
+                    'user_id': {{ client.id }},
+            'comment_text': $(inputText).val(),
+            'article_id': inputName
                     },
-                    success: function (data) {
-                        if (data == 'ok') {
-                            var string = '<a class="list-group-item "><div class="row"><div class="col-md-2"><img src="{% static "img/pic02.jpg" %}" width="80" class="img-responsive img-thumbnail"/></div><div class="col-md-7"><h4>{{ client.nickname }}</h4><p style="color: gray;">{{ client.self_description }}</p></div><div class="col-md-3"><p>刚刚发表</p></div></div><div class="row"><div class="col-md-10 col-md-offset-1"><h4 id="list_group_item_text">' + $(inputText).val() + '</h4></div></div><div class="row"><div class="col-md-offset-1"><span class="glyphicon glyphicon-thumbs-up"><code>0</code>&nbsp;</span></div></div></a>'
-                            $(id_list_group).append(string)
-                        }
-                    },
-                    error: function () {
-                        alert('出现错误!');
-                    }
+        success: function (data) {
+            if (data == 'ok') {
+                var string = '<a class="list-group-item "><div class="row"><div class="col-md-2"><img src="{% static "img/pic02.jpg" %}" width="80" class="img-responsive img-thumbnail"/></div><div class="col-md-7"><h4>{{ client.nickname }}</h4><p style="color: gray;">{{ client.self_description }}</p></div><div class="col-md-3"><p>刚刚发表</p></div></div><div class="row"><div class="col-md-10 col-md-offset-1"><h4 id="list_group_item_text">' + $(inputText).val() + '</h4></div></div><div class="row"><div class="col-md-offset-1"><span class="glyphicon glyphicon-thumbs-up"><code>0</code>&nbsp;</span></div></div></a>'
+                $(id_list_group).append(string)
+            }
+        },
+        error: function () {
+            alert('出现错误!');
+        }
                 });
             });
         });
 
-        $(document).ready(function () {
-            $('button[name="message"]').click(function () {
-                var messageObject = $(this);
-                var userId = messageObject.attr('userId');
-                var who = messageObject.attr('who');
-                $('#messsage_to').html('私信给: ' + who)
-                $('#leave_message').modal();
-                $('#sendTo').click(function () {
-                    //alert(userId+$('#message_text').val()+{{ client.id }});
+    $(document).ready(function () {
+        $('button[name="message"]').click(function () {
+            var messageObject = $(this);
+            var userId = messageObject.attr('userId');
+            var who = messageObject.attr('who');
+            $('#messsage_to').html('私信给: ' + who)
+            $('#leave_message').modal();
+            $('#sendTo').click(function () {
+                //alert(userId+$('#message_text').val()+{{ client.id }});
 
-                    $.ajax({
-                        url: '{% url 'article' %}',
-                        type: 'get',
-                        dataType: 'text',
-                        data: {
-                            'from_user_id': {{ client.id }},
-                            'message_text': $('#message_text').val(),
-                            'to_user_id': userId
+                $.ajax({
+                    url: "{% url 'article' %}",
+                    type: 'get',
+                    dataType: 'text',
+                    data: {
+                        'from_user_id': {{ client.id }},
+                'message_text': $('#message_text').val(),
+                'to_user_id': userId
                         },
-                        success: function (data) {
-                            if (data == 'ok') {
-                                var string = '<p class="text-center text-primary" ><strong>发送成功</strong></p>';
-                                setTimeout(function () {
-                                    test();
-                                }, 10000);
-                                $('#privateMessageBody').append(string).delay('slow').fadeIn();
+            success: function (data) {
+                if (data == 'ok') {
+                    var string = '<p class="text-center text-primary" ><strong>发送成功</strong></p>';
+                    setTimeout(function () {
+                        test();
+                    }, 10000);
+                    $('#privateMessageBody').append(string).delay('slow').fadeIn();
 
-                                setTimeout(function () {
-                                    test();
-                                }, 100000);
-                                $('#leave_message').modal('hide')
-                            }
-                        },
-                        error: function () {
-                            alert('出现错误!');
-                        }
+                    setTimeout(function () {
+                        test();
+                    }, 100000);
+                    $('#leave_message').modal('hide')
+                }
+            },
+            error: function () {
+                alert('出现错误!');
+            }
                     });
                 });
 
             });
         });
-    </script>
+
+</script>
 {% endblock %}

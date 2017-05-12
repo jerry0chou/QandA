@@ -65,7 +65,7 @@
         $('#regButton').click(function () {
             var msg = null
             $.ajax({
-                url: '{% url 'login_reg' %}',
+                url: '{% url "login_reg" %}',
                 type: 'POST',
                 dataType: 'text',
                 data: {
@@ -84,7 +84,7 @@
                     else {
                         $('#tipsforname').html();
                         $('#tipsforname').html(msg.name);
-                         $('#tipsforphone').html();
+                        $('#tipsforphone').html();
                         $('#tipsforphone').html(msg.phone);
                         $('#tipsforpwd').html();
                         $('#tipsforpwd').html(msg.pwd);

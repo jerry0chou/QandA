@@ -33,4 +33,6 @@ urlpatterns = [
     url(r'^profile/$', views.profile, name='profile'),
     url(r'^inbox/$', views.inbox, name='inbox'),
     url(r'^logout/$', views.logout, name='logout'),
+    url(r'^ask/$',views.ask, name='ask'),
+    url(r'^answer/$',views.answer, name='answer'),
 ]
