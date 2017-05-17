@@ -18,8 +18,8 @@ def upload_image(request, dir_name):
     files = request.FILES.get("imgFile", None)
     if files:
         result =image_upload(files, dir_name)
-    return HttpResponse(json.dumps(result), content_type="application/json")
-
+    return HttpResponse(json.dumps(result), content_type="text/html")
+    #text/html  application/json
 #目录创建
 def upload_generation_dir(dir_name):
     today = dt.datetime.today()

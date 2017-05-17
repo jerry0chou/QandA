@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-from models import Message, Question, Follow, Comment, User, Article,Tag
+from models import Message, Question, Follow, Comment, User, Article, Tag
 
 from django.db.models import Max, Count
+from django.db.models import Q
 import datetime
 import re
+
 
 class Elem():
     def __init__(self):
@@ -93,32 +95,43 @@ class ArticleView:
         self.comments = []
         self.comments_length = 0
 
+def similarQues(tags):
+    string = ''
+    for t in tags:
+        string = string + 'Q(tag__name__contains=' + '"' + unicode(t) + '"' + ')|'
+    string = string[:-1]
+    print string
+    string = 'Question.objects.filter(' + string + ')' + '.order_by("-likes").distinct()[:5]'
+    print string
+    similarQ = eval(string)
+    return similarQ
 
 class Ques_Article:
     def __init__(self):
         self.qid = 0
         self.tags = []
-        self.queston_author=None
-        self.likes=0
+        self.queston_author = None
+        self.likes = 0
         self.queston_decs = ''
         self.queston_title = ''
         self.articles = []
         self.article_count = 0
-
+        self.similarQ=[]
 
 def getArticleCommet(qid):
     question = Question.objects.get(id=qid)
     ques_art = Ques_Article()
     ques_art.qid = question.id
     ques_art.tags = question.tag.all()
-    ques_art.queston_author=question.author
+    ques_art.queston_author = question.author
     ques_art.queston_title = question.title
-    ques_art.likes=question.likes
+    ques_art.likes = question.likes
     ques_art.queston_decs = question.desc
+    ques_art.similarQ=similarQues(ques_art.tags)
     count = Question.objects.filter(id=qid).annotate(count=Count('article')).values('count')[0]
     ques_art.article_count = count['count']
     ques_art.articles = []
-    articles = question.article.all()
+    articles = question.article.all().order_by('-thumbsup')
     for art in articles:
         arti_view = ArticleView()
         arti_view.id = art.id
@@ -173,17 +186,18 @@ def sendMessage(from_id, to_id, content):
 
 class Profile:
     def __init__(self):
-        self.user=None
-        self.questions=[] #提问
-        self.answers=[]  # 回答
-        self.following_list=[]
-        self.following_count=0
-        self.followed_list=[]
-        self.followed_count=0
+        self.user = None
+        self.questions = []  # 提问
+        self.answers = []  # 回答
+        self.following_list = []
+        self.following_count = 0
+        self.followed_list = []
+        self.followed_count = 0
+
 
 def getProfile(uid):
     pro = Profile()
-    u =  User.objects.get(id=uid)
+    u = User.objects.get(id=uid)
     pro.user = u
     pro.questions = Question.objects.filter(author=u).order_by('date_publish')
 
@@ -208,8 +222,9 @@ def getProfile(uid):
     pro.followed_count = len(foed_list)
     return pro
 
-def askQuestion(uid,title,desc,tags):
-    ques,created = Question.objects.get_or_create(title=title)
+
+def askQuestion(uid, title, desc, tags):
+    ques, created = Question.objects.get_or_create(title=title)
     ques.title = title
     ques.desc = desc
     ques.likes = 0
@@ -219,6 +234,20 @@ def askQuestion(uid,title,desc,tags):
     ques.save()
 
     for tag in tags:
-        if tag :
-            t,created=Tag.objects.get_or_create(name=tag)
+        if tag:
+            t, created = Tag.objects.get_or_create(name=tag)
             ques.tag.add(t)
+
+
+def saveArticle(uid, qid, content):
+    article, created = Article.objects.get_or_create(user_id=uid)
+    article.content = content
+    if created:
+        article.date_publish = datetime.datetime.now()
+    article.save()
+    if created:
+        question = Question.objects.get(id=qid)
+        question.article.add(article)
+
+
+

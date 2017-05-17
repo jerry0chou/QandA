@@ -122,7 +122,7 @@ DATE_FORMAT = 'Y-m-d'
 
 SUIT_CONFIG = {  # suit页面配置
     'ADMIN_NAME': '网络问答社区',  # 登录界面提示
-    'LIST_PER_PAGE': 20,
+    'LIST_PER_PAGE': 10,
     'MENU': ({'label': u'用户管理', 'app': 'home',
               'models': ('User', 'Follow', 'Question', 'Article', 'Tag', 'Comment', 'Message')},
              # 每一个字典表示左侧菜单的一栏

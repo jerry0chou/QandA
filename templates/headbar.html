@@ -24,7 +24,7 @@
                 <div class="collapse navbar-collapse navbar-responsive-collapse">
                     <form class="navbar-form navbar-left">
                         <div class="form-group">
-                            <input type="text" class="form-control" size="50" placeholder="搜索你感兴趣的内容" />
+                            <input type="text" class="form-control" size="50" placeholder="搜索你感兴趣的问题或标签" />
                         </div>
                         <button type="button" class="btn btn-primary">
                         <span class="glyphicon glyphicon-search"></span>
@@ -52,6 +52,9 @@
                         <li>
                             <a href="{% url 'answer' %}" class="navbar-link" style="color: #337ab7;font-size: 18px;">回答
                             </a>
+                        </li>
+                        <li>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         </li>
                         <li>
                             {% if client.username %}

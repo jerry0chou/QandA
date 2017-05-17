@@ -7,8 +7,8 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from handle import getSequence, showPage, getMostReply, getArticleCommet, saveComment, sendMessage, getFollowId, \
-    getProfile,askQuestion
-from home.models import User, Follow, Message, Question
+    getProfile,askQuestion,saveArticle
+from home.models import User, Follow, Message, Question,Article
 from home.verify import verify_username, verify_phone, verify_pwd, verify_pwd2, verify_email
 from django.db.models import Q
 import re
@@ -43,8 +43,8 @@ def index(request):
             pagenum = int(num)
             if pagenum - 1 in size:
                 index_content = showPage(Qlist, result, pagenum - 1)
-        except Exception:
-            print Exception.message, '类型转换有问题'
+        except Exception,e:
+            print e.message, '类型转换有问题'
 
     return render(request, 'index.html', locals())
 
@@ -159,9 +159,7 @@ def profile(request):
     elif sex and self_description and mobile and email and oldPwd and newPwd:
         print sex, self_description, email, mobile, oldPwd, newPwd
         phone_list = verify_phone(mobile)
-
         user = User.objects.get(id=client.id)
-
         print '------', unicode(phone_list['phone']), user.password, verify_email(email), verify_pwd2(newPwd)
         if phone_list['phone'] == '' and user.password == oldPwd and verify_email(email) == 'ok' and verify_pwd2(
                 newPwd) == 'ok':
@@ -207,5 +205,28 @@ def ask(request):
             q_tags= re.split(' |,|\.|;|\*|\n',q_tag)
             askQuestion(uid=client.id,title=q_name,desc=q_desc,tags=q_tags)
             return HttpResponse('ok')
+
+@csrf_exempt
 def answer(request):
-    return render(request, 'answer.html', locals())
+    if request.method == 'POST':
+        user_id=request.POST['user_id']
+        question_id=request.POST['question_id']
+        article_content=request.POST['article_content']
+        saveArticle(uid=user_id,qid=question_id,content=article_content)
+        return HttpResponse('ok')
+    else:
+        qid = request.GET.get('qid')
+        client = request.session.get('client', default=None)
+        if qid and client:
+            question=Question.objects.get(id=qid)
+            tags=question.tag.all()
+            article=question.article.filter(user_id=client.id)
+        return render(request, 'answer.html', locals())
+
+@csrf_exempt
+def search(request):
+    #if request.method == 'POST':
+        search_content = request.GET.get('search_content')
+        search_list = Question.objects.filter(title__contains=search_content).values('id','title','desc')[:1]
+        print search_content,unicode(search_list)
+        return HttpResponse('ok')
