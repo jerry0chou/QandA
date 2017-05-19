@@ -1,12 +1,17 @@
 {% load staticfiles %}
+
 {% for index in index_content %}
     <div class="alert alert-info-jerry ">
         <div class="row">
-            <div class="col-md-2">
-                <img src="{% static "img/pic02.jpg" %}" width="300" class="img-responsive img-thumbnail"/>
+            <div class="col-md-1">
+                <a href="/profile/?uid={{ index.article.user.id }}">
+                    {% autoescape off %}
+                        {{ index.article.user.profile }}
+                    {% endautoescape %}
+                </a>
             </div>
-            <div class="col-md-8 ">
-                <h4>{{ index.article.user.nickname }}</h4>
+            <div class="col-md-9 ">
+                <a href="/profile/?uid={{ index.article.user.id }}"><h4>{{ index.article.user.nickname }}</h4></a>
                 <p>{{ index.article.user.self_description }}</p>
             </div>
             <div class="col-md-2">
@@ -34,34 +39,29 @@
     </div>
 {% endfor %}
 
-<div class="col-md-offset-2">
-    <ul class="pagination">
+<div class="text-center">
 
+    <ul class="pager">
         <li>
-            {% if pagenum > 1 %}
-                <a href="/?num={{ pagenum|add:"-1" }}">&laquo;上一页</a>
-            {% else %}
-                <a href="/?num=1">&laquo;上一页</a>
+            {% if query.has_previous %}
+                <a href="?num={{ query.previous_page_number }}&searchText={{ searchText }}">&laquo;上一页</a>
             {% endif %}
         </li>
-        {% for s in size %}
-            {% with i=forloop.counter %}
-                {% if i == pagenum %}
-                    <li class="active">
-                        {% else %}
-                    <li>
-                {% endif %}
-                <a href="/?num={{ i }}">{{ i }}</a>
-            {% endwith %}
+        {#        Page {{ query.number }} of {{ query.paginator.num_pages }}.#}
+        <li >
+            <a style="background-color: #5bc0de;color: #0f0f0f">{{ query.number }}</a>
         </li>
-        {% endfor %}
+        /
         <li>
-            {% if pagenum < length %}
-                <a href="/?num={{ pagenum|add:1 }}">下一页&raquo;</a>
-            {% else %}
-                <a href="/?num={{ pagenum }}">下一页&raquo;</a>
+            <a>{{ query.paginator.num_pages }}</a>
+        </li>
+        <li>
+            {% if query.has_next %}
+
+                <a href="?num={{ query.next_page_number }}&searchText={{ searchText }}">下一页&raquo;</a>
+
             {% endif %}
         </li>
-
     </ul>
+
 </div>

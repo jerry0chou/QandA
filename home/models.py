@@ -15,6 +15,7 @@ sys.setdefaultencoding('utf8')
 
 
 class User(AbstractUser):
+    profile=models.TextField('头像',default='<img width="300" class="img-responsive img-thumbnail" src="/uploads/default/zhi.jpg" />')
     nickname = models.CharField(max_length=50, default='', verbose_name='昵称')
     mobile = models.CharField(max_length=11, blank=True, null=True, unique=True, verbose_name='手机号码')
     sex = models.BooleanField('性别', max_length=2, choices=((0, '男'), (1, '女'),), default=0)
@@ -84,7 +85,7 @@ class Comment(models.Model):
         verbose_name_plural = verbose_name
 
     def __unicode__(self):
-        return self.content
+        return 'id:'+str(self.id)+' '+self.user.nickname
 
 
 class Article(models.Model):

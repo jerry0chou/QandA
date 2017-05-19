@@ -72,16 +72,21 @@
                     {% for article in ques_article.articles %} {% with i=forloop.counter %}
                         <div class="alert">
                         <div class="row">
-                            <div class="col-md-2">
-                                <img src="{% static 'img/pic02.jpg' %}" width="300"
-                                     class="img-responsive img-thumbnail"/>
+                            <div class="col-md-1">
+                                <a href="/profile/?uid={{ article.user.id }}">
+                                {% autoescape off%}
+                                    {{ article.user.profile}}
+                                {% endautoescape %}
+                                </a>
                             </div>
-                            <div class="col-md-7">
+                            <div class="col-md-8">
+                                <a href="/profile/?uid={{ article.user.id }}">
                                 {% if article.user.nickname %}
                                     <h4>{{ article.user.nickname }}</h4>
                                 {% else %}
                                     <h4>{{ article.user.username }}</h4>
                                 {% endif %}
+                                </a>
                                 <p style="color: gray">{{ article.user.self_description }}</p>
                             </div>
                             <div class="col-md-3">

@@ -2,9 +2,24 @@
 from models import Message, Question, Follow, Comment, User, Article, Tag
 
 from django.db.models import Max, Count
-from django.db.models import Q
+from django.core.paginator import Paginator, InvalidPage, EmptyPage, PageNotAnInteger
 import datetime
 import re
+from django.db.models import Q
+
+# 分页代码
+def getPage(request, query_list):
+    paginator = Paginator(query_list, 2)
+    try:
+        page = request.GET.get('num', 1)
+        handle_list = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        handle_list = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        handle_list = paginator.page(paginator.num_pages)
+    return handle_list
 
 
 class Elem():
@@ -16,21 +31,21 @@ class Elem():
         self.simple_desc = None
 
 
-def getSequence(length, divide):
-    seq = []
-    while (length > divide):
-        seq.append(divide)
-        length = length - divide
-    seq.append(length)
-
-    start = 0
-    result = []
-    for s in seq:
-        end = start + s
-        tup = (start, end)
-        start = end
-        result.append(tup)
-    return result
+# def getSequence(length, divide):
+#     seq = []
+#     while (length > divide):
+#         seq.append(divide)
+#         length = length - divide
+#     seq.append(length)
+#
+#     start = 0
+#     result = []
+#     for s in seq:
+#         end = start + s
+#         tup = (start, end)
+#         start = end
+#         result.append(tup)
+#     return result
 
 
 def getIndexPage(query):
@@ -50,12 +65,12 @@ def getIndexPage(query):
     return content
 
 
-def showPage(query, result, pagenum):
-    start = result[pagenum][0]
-    end = result[pagenum][1]
-    query = query[start:end]
-    index_content = getIndexPage(query)
-    return index_content
+# def showPage(query, result, pagenum):
+#     start = result[pagenum][0]
+#     end = result[pagenum][1]
+#     query = query[start:end]
+#     index_content = getIndexPage(query)
+#     return index_content
 
 
 class MostReply:
@@ -95,16 +110,17 @@ class ArticleView:
         self.comments = []
         self.comments_length = 0
 
+
 def similarQues(tags):
     string = ''
     for t in tags:
         string = string + 'Q(tag__name__contains=' + '"' + unicode(t) + '"' + ')|'
     string = string[:-1]
-    print string
+    #print string
     string = 'Question.objects.filter(' + string + ')' + '.order_by("-likes").distinct()[:5]'
-    print string
     similarQ = eval(string)
     return similarQ
+
 
 class Ques_Article:
     def __init__(self):
@@ -116,7 +132,8 @@ class Ques_Article:
         self.queston_title = ''
         self.articles = []
         self.article_count = 0
-        self.similarQ=[]
+        self.similarQ = []
+
 
 def getArticleCommet(qid):
     question = Question.objects.get(id=qid)
@@ -127,7 +144,7 @@ def getArticleCommet(qid):
     ques_art.queston_title = question.title
     ques_art.likes = question.likes
     ques_art.queston_decs = question.desc
-    ques_art.similarQ=similarQues(ques_art.tags)
+    ques_art.similarQ = similarQues(ques_art.tags)
     count = Question.objects.filter(id=qid).annotate(count=Count('article')).values('count')[0]
     ques_art.article_count = count['count']
     ques_art.articles = []
@@ -240,14 +257,18 @@ def askQuestion(uid, title, desc, tags):
 
 
 def saveArticle(uid, qid, content):
-    article, created = Article.objects.get_or_create(user_id=uid)
-    article.content = content
-    if created:
-        article.date_publish = datetime.datetime.now()
-    article.save()
-    if created:
-        question = Question.objects.get(id=qid)
-        question.article.add(article)
-
-
-
+    question = Question.objects.get(id=qid)
+    article = question.article.filter(user_id=uid)
+    print article
+    if article:
+        for art in article:
+            art.content = content
+            art.save()
+    else:
+        art = Article()
+        u = User.objects.get(id=uid)
+        art.user = u
+        art.content = content
+        art.date_publish = datetime.datetime.now()
+        art.save()
+        question.article.add(art)

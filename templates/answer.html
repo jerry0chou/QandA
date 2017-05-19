@@ -74,6 +74,7 @@
         $(document).ready(function () {
             $('#saveReply').click(function () {
                 editor.sync();
+{#                alert( $('#editor_id').val());#}
                 $.ajax({
                     url: '{% url "answer" %}',
                     type: 'post',

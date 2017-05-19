@@ -7,57 +7,59 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target=".navbar-responsive-collapse">
                     <span class="sr-only">Toggle navigtion</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                    <a href="{% url 'index' %}" class="navbar-brand " style="margin-left: 20px;color: #337ab7;font-size: x-large;">
+                <a href="{% url 'index' %}" class="navbar-brand "
+                   style="margin-left: 20px;color: #337ab7;font-size: x-large;">
                     QandA
                 </a>
-                </div>
-                <div class="collapse navbar-collapse navbar-responsive-collapse">
-                    <form class="navbar-form navbar-left">
-                        <div class="form-group">
-                            <input type="text" class="form-control" size="50" placeholder="搜索你感兴趣的问题或标签" />
-                        </div>
-                        <button type="button" class="btn btn-primary">
+            </div>
+            <div class="collapse navbar-collapse navbar-responsive-collapse">
+                <form class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input id="searchText" type="text" value="{{ searchStr|default:"" }}" class="form-control" size="50" placeholder="搜索你感兴趣的问题或标签"/>
+                    </div>
+                    <button   type="button" id="searchButton" class="btn btn-primary">
                         <span class="glyphicon glyphicon-search"></span>
                     </button>
-                    </form>
-                    <ul class="nav navbar-nav">
-                        <li class="active">
-                            <a href="{% url 'index' %}"><span class="glyphicon glyphicon-home">首页</span></a>
-                        </li>
-                        <li>
-                            <a data-toggle="modal" data-target="#messageBell"> <span
-                                class="glyphicon glyphicon-bell">5</span></a>
-                        </li>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </form>
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a href="{% url 'index' %}"><span class="glyphicon glyphicon-home">首页</span></a>
 
-                    </ul>
+                    </li>
 
-                    <ul class="nav navbar-nav">
+                </ul>
 
-                        <li>
-                            <button type="button" class="btn btn-primary navbar-btn" data-toggle="modal" data-target="#myModal">提问
-                            </button>
+                <ul class="nav navbar-nav">
+                    <li>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-primary navbar-btn" data-toggle="modal"
+                                data-target="#myModal">提问
+                        </button>
 
-                        </li>
-                        <li>
-                            <a href="{% url 'answer' %}" class="navbar-link" style="color: #337ab7;font-size: 18px;">回答
-                            </a>
-                        </li>
-                        <li>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        </li>
-                        <li>
-                            {% if client.username %}
+                    </li>
+
+                    <li>
+                        <a href="{% url 'answer' %}" class="navbar-link" style="color: #337ab7;font-size: 18px;">回答
+                        </a>
+                    </li>
+                    <li>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </li>
+                    <li>
+                        {% if client.username %}
                             <a href="" class="dropdown-toggle " data-toggle="dropdown">
                                 {% if client.nickname %}
                                     <b>{{ client.nickname }}</b>
@@ -79,43 +81,56 @@
                                     <a id="logout" href=""><span class="glyphicon glyphicon-off">&nbsp;退出</span></a>
                                 </li>
                             </ul>
-                            {% else %}
-                            <a href="{% url 'login_reg' %}">请登录</a> {% endif %}
-                        </li>
-                        <li>
-                            <img src="{% static 'img/pic02.jpg' %}" width="80" class="img-responsive img-thumbnail" />
-                        </li>
+                        {% else %}
+                            <a href="{% url 'login_reg' %}">请登录</a>
+                        {% endif %}
+                    </li>
+                    <li>
+                        <div >
+                        {% autoescape off %}
+                         {{ client.profile }}
+                        {% endautoescape %}
+                        </div>
+                    </li>
 
-                    </ul>
+                </ul>
 
-                </div>
             </div>
         </div>
-    </nav>
-    <script>
-        $(document).ready(function () {
-            $('#logout').click(function () {
-                $.ajax({
-                    url: "{% url 'logout' %}",
-                    type: 'get',
-                    dataType: 'text',
-                    success: function (data) {
-                        if (data == 'ok') {
-                            $(window).attr('location', '{% url "login_reg" %}');
-                        }
-                        else {
-                            alert(data);
-                        }
-                    },
-                    error: function () {
-                        alert('出现错误!')
+    </div>
+</nav>
+<script>
+    $(document).ready(function () {
+        $('#logout').click(function () {
+            $.ajax({
+                url: "{% url 'logout' %}",
+                type: 'get',
+                dataType: 'text',
+                success: function (data) {
+                    if (data == 'ok') {
+                        $(window).attr('location', '{% url "login_reg" %}');
                     }
-                });
+                    else {
+                        alert(data);
+                    }
+                },
+                error: function () {
+                    alert('出现错误!')
+                }
             });
         });
-    </script>
-    {% include 'message_bell.html' %} {% include 'ask_question.html' %}
-    <br/> {% block main_content %}{% endblock %}
+    });
+
+    $(document).ready(function () {
+        $('#searchButton').click(function () {
+            var string=$('#searchText').val()
+            $(window).attr('location','/?searchText='+string);
+        });
+    });
+</script>
+
+{% include 'ask_question.html' %}
+<br/> {% block main_content %}{% endblock %}
 </body>
 
 </html>

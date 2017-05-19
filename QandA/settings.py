@@ -131,7 +131,7 @@ SUIT_CONFIG = {  # suit页面配置
     # label表示name，app表示上边的install的app，models表示用了哪些models
 }
 
-# 自定义日志输出信息
+#自定义日志输出信息
 # LOGGING = {
 #     'version': 1,
 #     'disable_existing_loggers': True,

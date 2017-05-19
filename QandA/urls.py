@@ -37,5 +37,4 @@ urlpatterns = [
     url(r'^ask/$', views.ask, name='ask'),
     url(r'^answer/$', views.answer, name='answer'),
 
-    url(r'^search/$', views.search, name='search'),
 ]

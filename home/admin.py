@@ -10,10 +10,17 @@ class UserleAdmin(admin.ModelAdmin):
     list_filter = ('username', 'email',)
     fieldsets = (
         (None, {
-            'fields': ('username', 'nickname', 'sex', 'self_description', 'email', 'mobile', 'password',)
+            'fields': ('profile','username', 'nickname', 'sex', 'self_description', 'email', 'mobile', 'password',)
         }),
 
     )
+
+    class Media:
+        js = (
+            '/static/js/kindeditor-4.1.10/kindeditor-min.js',
+            '/static/js/kindeditor-4.1.10/lang/zh_CN.js',
+            '/static/js/kindeditor-4.1.10/profile.js',
+        )
 
 
 class ArticleAdmin(admin.ModelAdmin):
@@ -49,7 +56,6 @@ class QuestionAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'author','desc', 'date_publish', 'likes',)
     list_display_links = ('title',)
     list_filter = ('date_publish', 'likes')
-
 
 admin.site.register(User, UserleAdmin)
 admin.site.register(Follow)

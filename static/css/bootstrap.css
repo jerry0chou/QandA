@@ -5072,8 +5072,9 @@ a.thumbnail.active {
   border-color: #bce8f1;
 }
 .alert-info-jerry {
-  
+
   background-color: #f0f8ff;
+   border-color: #bce8f1;
 }
 
 .alert-info hr {

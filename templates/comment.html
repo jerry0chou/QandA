@@ -4,11 +4,14 @@
         {% for com in article.comments %}
             <a class="list-group-item ">
                 <div class="row">
-                    <div class="col-md-2">
-                        <img src="{% static "img/pic02.jpg" %}" width="80"
-                             class="img-responsive img-thumbnail"/>
+                    <div class="col-md-1">
+
+                        {% autoescape off %}
+                            {{ com.user.profile }}
+                        {% endautoescape %}
+
                     </div>
-                    <div class="col-md-7">
+                    <div class="col-md-8">
                         <h4>{{ com.user.nickname }}</h4>
                         <p style="color: gray;">{{ com.user.self_description }}</p>
                     </div>

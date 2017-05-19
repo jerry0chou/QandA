@@ -6,19 +6,21 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from handle import getSequence, showPage, getMostReply, getArticleCommet, saveComment, sendMessage, getFollowId, \
-    getProfile,askQuestion,saveArticle
-from home.models import User, Follow, Message, Question,Article
+from handle import  getMostReply, getArticleCommet, saveComment, sendMessage, getFollowId, \
+    getProfile, askQuestion, saveArticle,getPage,getIndexPage
+from home.models import User, Follow, Message, Question
 from home.verify import verify_username, verify_phone, verify_pwd, verify_pwd2, verify_email
 from django.db.models import Q
 import re
 
+
 def global_setting(request):
     client = request.session.get('client', default=None)
+    searchStr=request.session.get('searchStr', default='')
     NewQues = Question.objects.all().order_by('-date_publish')[:3]
     MostLikes = Question.objects.all().order_by('-likes')[:3]
     question_list = Question.objects.annotate(count=Count('article')).values('count', 'title', 'id').order_by('-count')[
-        :3]
+                    :3]
     if client:
         followId_list = getFollowId(client.id)
     MostReply = getMostReply(question_list)
@@ -27,25 +29,17 @@ def global_setting(request):
 
 @csrf_exempt
 def index(request):
-    num = request.GET.get('num')
+    searchText=request.GET.get('searchText', default='')
+    print searchText,':SEARCH'
+    request.session['searchStr'] = searchText
 
-    Qlist = Question.objects.all().order_by('-likes')  # 查询
-    length = len(Qlist)
-    result = getSequence(length, 2)  # 每两个为一页
-    size = range(len(result))  # 这个是列表
-    length = len(size)
-
-    if num is None:
-        pagenum = 1
-        index_content = showPage(Qlist, result, 0)
+    if searchText:
+        Qlist= Question.objects.filter(Q(title__contains=searchText)|Q(tag__name__contains=searchText)).distinct().order_by('-likes')
     else:
-        try:
-            pagenum = int(num)
-            if pagenum - 1 in size:
-                index_content = showPage(Qlist, result, pagenum - 1)
-        except Exception,e:
-            print e.message, '类型转换有问题'
+        Qlist = Question.objects.all().order_by('-likes')
 
+    query=getPage(request,Qlist)
+    index_content=getIndexPage(query)
     return render(request, 'index.html', locals())
 
 
@@ -199,34 +193,28 @@ def ask(request):
     if request.method == 'POST':
         client = request.session.get('client', default=None)
         if client:
-            q_name=request.POST['question_name']
-            q_desc=request.POST['question_description']
-            q_tag=request.POST['question_tag']
-            q_tags= re.split(' |,|\.|;|\*|\n',q_tag)
-            askQuestion(uid=client.id,title=q_name,desc=q_desc,tags=q_tags)
+            q_name = request.POST['question_name']
+            q_desc = request.POST['question_description']
+            q_tag = request.POST['question_tag']
+            q_tags = re.split(' |,|\.|;|\*|\n', q_tag)
+            askQuestion(uid=client.id, title=q_name, desc=q_desc, tags=q_tags)
             return HttpResponse('ok')
+
 
 @csrf_exempt
 def answer(request):
     if request.method == 'POST':
-        user_id=request.POST['user_id']
-        question_id=request.POST['question_id']
-        article_content=request.POST['article_content']
-        saveArticle(uid=user_id,qid=question_id,content=article_content)
+        user_id = request.POST['user_id']
+        question_id = request.POST['question_id']
+        article_content = request.POST['article_content']
+        saveArticle(uid=user_id, qid=question_id, content=article_content)
         return HttpResponse('ok')
     else:
         qid = request.GET.get('qid')
         client = request.session.get('client', default=None)
         if qid and client:
-            question=Question.objects.get(id=qid)
-            tags=question.tag.all()
-            article=question.article.filter(user_id=client.id)
+            question = Question.objects.get(id=qid)
+            tags = question.tag.all()
+            article = question.article.filter(user_id=client.id)
         return render(request, 'answer.html', locals())
 
-@csrf_exempt
-def search(request):
-    #if request.method == 'POST':
-        search_content = request.GET.get('search_content')
-        search_list = Question.objects.filter(title__contains=search_content).values('id','title','desc')[:1]
-        print search_content,unicode(search_list)
-        return HttpResponse('ok')

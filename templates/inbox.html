@@ -18,7 +18,9 @@
         {% endif %}
       ">
                 <div class="col-md-2 alert">
-                    <img src="{% static 'img/pic02.jpg' %}" width="100" class="img-responsive img-thumbnail"/>
+                    {% autoescape off %}
+                    {{message.from_user.profile}}
+                {% endautoescape %}
                 </div>
                 <div class="col-md-10">
                     <div class="row">
