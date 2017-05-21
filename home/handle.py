@@ -57,10 +57,11 @@ def getIndexPage(query):
         elem.date_publish = question.date_publish
         elem.likes = question.likes
         article = question.article.annotate(Max('thumbsup'))[0]
-        elem.article = article
-        dr = re.compile(r'<[^>]+>', re.S)
-        dd = dr.sub('', article.content)
-        elem.simple_desc = dd
+        if article:
+            elem.article = article
+            dr = re.compile(r'<[^>]+>', re.S)
+            dd = dr.sub('', article.content)
+            elem.simple_desc = dd
         content.append(elem)
     return content
 
@@ -241,15 +242,24 @@ def getProfile(uid):
 
 
 def askQuestion(uid, title, desc, tags):
-    ques, created = Question.objects.get_or_create(title=title)
+    #print uid,title,desc,tags
+    #ques, created = Question.objects.get_or_create(title=title)
+    QList=Question.objects.filter(title=title)
+    #print created
+    print QList
+    #if QList :
+    print 'hello'
+    ques=Question()
     ques.title = title
     ques.desc = desc
     ques.likes = 0
     ques.date_publish = datetime.datetime.now()
+    print ques.date_publish
     u = User.objects.get(id=uid)
     ques.author = u
-    ques.save()
 
+    ques.save()
+    print ques
     for tag in tags:
         if tag:
             t, created = Tag.objects.get_or_create(name=tag)

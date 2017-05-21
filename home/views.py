@@ -13,7 +13,6 @@ from home.verify import verify_username, verify_phone, verify_pwd, verify_pwd2, 
 from django.db.models import Q
 import re
 
-
 def global_setting(request):
     client = request.session.get('client', default=None)
     searchStr=request.session.get('searchStr', default='')
@@ -41,7 +40,6 @@ def index(request):
     query=getPage(request,Qlist)
     index_content=getIndexPage(query)
     return render(request, 'index.html', locals())
-
 
 @csrf_exempt
 def login_reg(request):
@@ -197,6 +195,7 @@ def ask(request):
             q_desc = request.POST['question_description']
             q_tag = request.POST['question_tag']
             q_tags = re.split(' |,|\.|;|\*|\n', q_tag)
+            print q_name,q_desc,q_tag
             askQuestion(uid=client.id, title=q_name, desc=q_desc, tags=q_tags)
             return HttpResponse('ok')
 

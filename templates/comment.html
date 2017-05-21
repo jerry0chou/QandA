@@ -26,7 +26,12 @@
                 </div>
                 <div class="row">
                     <div class="col-md-offset-1">
-                        <span class="glyphicon glyphicon-thumbs-up"><code>{{ com.thumbsup }}</code>&nbsp;</span>
+                        {#                        <span class="glyphicon glyphicon-thumbs-up"><code>{{ com.thumbsup }}</code>&nbsp;</span>#}
+                        <div class="praise">
+                            <span class="praiseParent"><img src="{% static 'img/zan.png' %}" id="praise-img"/></span>
+                            <span id="praise-txt">{{ com.thumbsup }}</span>
+                            <span id="add-num"><em>+1</em></span>
+                        </div>
                     </div>
                 </div>
             </a>

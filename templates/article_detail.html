@@ -1,4 +1,5 @@
-{% extends 'headbar.html' %} {% load staticfiles %} {% block main_content %} {% include 'leave_message.html' %}
+{% extends 'headbar.html' %}
+{% load staticfiles %} {% block main_content %} {% include 'leave_message.html' %}
     <div class="container">
         <div class="row">
             <div class="col-md-12 well">
@@ -74,18 +75,18 @@
                         <div class="row">
                             <div class="col-md-1">
                                 <a href="/profile/?uid={{ article.user.id }}">
-                                {% autoescape off%}
-                                    {{ article.user.profile}}
-                                {% endautoescape %}
+                                    {% autoescape off %}
+                                        {{ article.user.profile }}
+                                    {% endautoescape %}
                                 </a>
                             </div>
                             <div class="col-md-8">
                                 <a href="/profile/?uid={{ article.user.id }}">
-                                {% if article.user.nickname %}
-                                    <h4>{{ article.user.nickname }}</h4>
-                                {% else %}
-                                    <h4>{{ article.user.username }}</h4>
-                                {% endif %}
+                                    {% if article.user.nickname %}
+                                        <h4>{{ article.user.nickname }}</h4>
+                                    {% else %}
+                                        <h4>{{ article.user.username }}</h4>
+                                    {% endif %}
                                 </a>
                                 <p style="color: gray">{{ article.user.self_description }}</p>
                             </div>
@@ -105,20 +106,33 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <div class="content">
-                                {% autoescape off %} {{ article.content }} {% endautoescape %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="content">
+                                    {% autoescape off %} {{ article.content }} {% endautoescape %}
+                                </div>
                             </div>
                         </div>
-
                         <hr/>
-                        <h4>
-                            <a data-toggle="collapse" href="#collapseComment{{ i }}"><span
-                                    class="glyphicon glyphicon-comment"><code>{{ article.comments_length }}</code>&nbsp;</span>
-                            </a>
-                            <span class="glyphicon glyphicon-thumbs-up"><code>{{ article.thumbsup }}</code>&nbsp;</span>
-                            <span class="glyphicon glyphicon-calendar"><code>{{ article.date_publish|date:'M  j号 Y年' }}</code>&nbsp;</span>
-                        </h4>
+                        <div class="row">
+                            <div class="col-md-1 h4">
+                                <a data-toggle="collapse" href="#collapseComment{{ i }}"><span
+                                        class="glyphicon glyphicon-comment"><code>{{ article.comments_length }}</code>&nbsp;</span>
+                                </a>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="praise">
+                                    <span class="praiseParent"><img src="{% static 'img/zan.png' %}" id="praise-img"/></span>
+                                    <span id="praise-txt">{{ article.thumbsup }}</span>
+                                    <span id="add-num"><em>+1</em></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-7 h4">
+                                <span class="glyphicon glyphicon-calendar"><code>{{ article.date_publish|date:'M  j号 Y年' }}</code>&nbsp;</span>
+                            </div>
+                        </div>
+                        <hr/>
                         {% include 'comment.html' %} {% endwith %} {% endfor %}
 
                     </div>
@@ -138,7 +152,8 @@
                                    style="background-color:{% cycle '#dff0d8'  '#d9edf7' '#fcf8e3'  '#f2dede' '#286090' %};">
                                     {{ ques.title }}
                                     <br>
-                                    <small style="color: gray">{{ ques.likes }}个<span class="glyphicon glyphicon-heart"></span></small>
+                                    <small style="color: gray">{{ ques.likes }}个<span
+                                            class="glyphicon glyphicon-heart"></span></small>
                                 </a>
                             {% endfor %}
                         </div>
@@ -147,6 +162,37 @@
             </div>
         </div>
     </div>
+    <script>
+        $(function () {
+            $(".praiseParent").click(function () {
+                var currrent=$(this);
+                var praise_img=currrent.children();
+                var praise_txt = currrent.next();
+                var text_box=currrent.siblings().eq(1)
+                //var praise_img = $("#praise-img");
+                //var praise_txt = $("#praise-txt");
+                //var text_box = $("#add-num");
+                var num = parseInt(praise_txt.text());
+                if (praise_img.attr("src") == ("{% static 'img/yizan.png' %}")) {
+                    $(this).html("<img src='{% static 'img/zan.png' %}' id='praise-img' class='animation' />");
+                    praise_txt.removeClass("hover");
+                    text_box.show().html("<em class='add-animation'>-1</em>");
+                    $(".add-animation").removeClass("hover");
+                    num -= 1;
+                    praise_txt.text(num)
+                } else {
+                    $(this).html("<img src='{% static 'img/yizan.png' %}' id='praise-img' class='animation' />");
+                    praise_txt.addClass("hover");
+                    text_box.show().html("<em class='add-animation'>+1</em>");
+                    $(".add-animation").addClass("hover");
+                    num += 1;
+                    praise_txt.text(num)
+                }
+            });
+        })
+
+    </script>
+
 
     <script>
         $(document).ready(function () {
@@ -197,7 +243,7 @@
                     },
                     success: function (data) {
                         if (data == 'ok') {
-                            var string = '<a class="list-group-item "><div class="row"><div class="col-md-2"><img src="{% static "img/pic02.jpg" %}" width="80" class="img-responsive img-thumbnail"/></div><div class="col-md-7"><h4>{{ client.nickname }}</h4><p style="color: gray;">{{ client.self_description }}</p></div><div class="col-md-3"><p>刚刚发表</p></div></div><div class="row"><div class="col-md-10 col-md-offset-1"><h4 id="list_group_item_text">' + $(inputText).val() + '</h4></div></div><div class="row"><div class="col-md-offset-1"><span class="glyphicon glyphicon-thumbs-up"><code>0</code>&nbsp;</span></div></div></a>'
+                            var string = '<a class="list-group-item "><div class="row"><div class="col-md-2"><img src="/uploads/default/zhi.jpg" width="80" class="img-responsive img-thumbnail"/></div><div class="col-md-7"><h4>{{ client.nickname }}</h4><p style="color: gray;">{{ client.self_description }}</p></div><div class="col-md-3"><p>刚刚发表</p></div></div><div class="row"><div class="col-md-10 col-md-offset-1"><h4 id="list_group_item_text">' + $(inputText).val() + '</h4></div></div><div class="row"><div class="col-md-offset-1"><span class="glyphicon glyphicon-thumbs-up"><code>0</code>&nbsp;</span></div></div></a>'
                             $(id_list_group).append(string)
                         }
                     },

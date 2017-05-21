@@ -90,7 +90,7 @@
                     success: function (responseText) {
 
                         if (responseText == 'ok') {
-                            var string = '<div class="row alert alert-danger"><div class="col-md-2 alert"> <img src="{% static 'img/pic02.jpg' %}" width="100" class="img-responsive img-thumbnail"/></div><div class="col-md-10"><div class="row"><h4> 我 回复:  '+who+'</h4></div><div class="row"><p style="font-size: medium"> '+$('#message_text').val()+'</p></div><div class="row"> <div class="col-md-3"> <p style="color: gray">刚刚 </p></div><div class="col-md-3 col-md-offset-6 text-center">  <button name="reply" type="button" class="btn btn-primary" data-toggle="modal"  >已回复</button></div> </div> </div></div>'
+                            var string = '<div class="row alert alert-danger"><div class="col-md-2 alert"> <img src="/uploads/default/zhi.jpg" width="100" class="img-responsive img-thumbnail"/></div><div class="col-md-10"><div class="row"><h4> 我 回复:  '+who+'</h4></div><div class="row"><p style="font-size: medium"> '+$('#message_text').val()+'</p></div><div class="row"> <div class="col-md-3"> <p style="color: gray">刚刚 </p></div><div class="col-md-3 col-md-offset-6 text-center">  <button name="reply" type="button" class="btn btn-primary" data-toggle="modal"  >已回复</button></div> </div> </div></div>'
                             $('#inboxBody').prepend(string)
                             $('#leave_message').modal('hide')
                         }
