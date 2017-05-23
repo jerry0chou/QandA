@@ -3,7 +3,7 @@
 `请在python 2.7 的环境下运行`
 > cd 到工程环境下 在命令行下输入下面命令
 
-- [x] pip install requirements.txt
+- [x] pip install -r requirements.txt
 
 ### 2.运行服务器
 
